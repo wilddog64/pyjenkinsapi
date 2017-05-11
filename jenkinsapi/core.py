@@ -20,6 +20,7 @@ class Jenkins:
         self.url = url if url != '' else config_map['url']
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
+        self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
         
     @property
     def user():
@@ -39,7 +40,7 @@ class Jenkins:
 
     @property
     def password():
-        return None
+        return self._password
 
     @password.setter
     def password(value):
@@ -68,6 +69,10 @@ class Jenkins:
     @section.setter
     def section(value):
         self._section = section
+
+    @property
+    def jenkins():
+        return self._jenkins
 
 if __name__ == '__main__':
     import jenkinsapi.core
