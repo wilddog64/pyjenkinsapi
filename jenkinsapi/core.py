@@ -39,14 +39,6 @@ class Jenkins:
         self._url = value
 
     @property
-    def password():
-        return self._password
-
-    @password.setter
-    def password(value):
-        self._password = value
-
-    @property
     def config_file_path():
         return config_file_path
 
