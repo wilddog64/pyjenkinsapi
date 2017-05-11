@@ -1,1 +1,2 @@
 jenkinsapi==0.3.4
+jenkins-webapi==0.5.3
