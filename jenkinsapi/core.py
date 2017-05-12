@@ -21,7 +21,7 @@ class Jenkins:
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
         self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
-        
+
     @property
     def user():
         return self._user;
@@ -66,9 +66,25 @@ class Jenkins:
     def jenkins(self):
         return self._jenkins
 
+    @property
+    def jobs(self):
+        return self._jenkins.jobs
+
+    @property
+    def views(self):
+        return self.jenkins.views
+
 if __name__ == '__main__':
     import jenkinsapi.core
     config_file = 'jenkins.ini'
     jenkins = jenkinsapi.core.Jenkins(config_file=config_file, section='lcjenkins')
     print('jenkins url: %s' % jenkins.url)
     print('jenkins user: %s' % jenkins.user)
+
+    # list all the views for a given jenkins server
+    for view in jenkins.views:
+        print(view.name)
+
+    # list all the jobs for a given jenkins server
+    for job in jenkins.jobs:
+        print(job.name)
