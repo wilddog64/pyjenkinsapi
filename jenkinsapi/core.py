@@ -88,3 +88,8 @@ if __name__ == '__main__':
     # list all the jobs for a given jenkins server
     for job in jenkins.jobs:
         print(job.name)
+
+    print('view qa sites job:')
+    qasites_view = [view for view in jenkins.views if view.name == 'QA Sites'][0]
+    for job in qasites_view.jobs:
+        print(job.name)
