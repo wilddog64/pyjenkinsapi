@@ -47,7 +47,7 @@ class Jenkins:
         self._config_file_path = value
 
     @property
-    def config_file():
+    def config_file(self):
         return self._config_file
 
     @config_file.setter
@@ -55,7 +55,7 @@ class Jenkins:
         self._config_file = value
 
     @property
-    def section():
+    def section(self):
         return self._section
 
     @section.setter
@@ -63,7 +63,7 @@ class Jenkins:
         self._section = section
 
     @property
-    def jenkins():
+    def jenkins(self):
         return self._jenkins
 
 if __name__ == '__main__':
