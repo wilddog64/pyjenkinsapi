@@ -5,8 +5,8 @@ import click
 def jenkins():
     pass
 
-@jenkins.command()
-def views(jenkins_server):
+@jenkins.command('views')
+def views():
     click.echo('a list of jenkins view')
 
 @jenkins.command('jobs')
