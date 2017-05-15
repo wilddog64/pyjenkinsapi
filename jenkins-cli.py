@@ -5,8 +5,7 @@ import click
 def jenkins():
     pass
 
-@jenkins.command('views')
-@click.option('--jenkins-server', help='jenkins server url')
+@jenkins.command()
 def views(jenkins_server):
     click.echo('a list of jenkins view')
 
