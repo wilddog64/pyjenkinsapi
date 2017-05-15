@@ -2,8 +2,9 @@ import click
 
 
 @click.group()
-def jenkins():
-    pass
+@click.option('-s', '--server', help='jenkins server url')
+def jenkins(server):
+    click.echo('jenkins server %s' % server)
 
 @jenkins.command('views')
 def views():
