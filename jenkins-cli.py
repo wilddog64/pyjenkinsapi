@@ -20,11 +20,18 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 
 @jenkins.command('views')
 @click.option('-a', '--all', type=click.BOOL, is_flag=True, help='list all or a particular view', default=False)
+@click.argument('name', nargs=-1)
 @click.pass_context
-def views(ctx, all):
+def views(ctx, all, name):
+    jenkins = ctx.meta['jenkins']
     if all:
-        for view in ctx.meta['jenkins'].views:
+        for view in jenkins.views:
             click.echo(view.name)
+    else:
+        if name:
+            if jenkins.jenkins.view_exists(name[0]):
+                view = [view for view in jenkins.views if view.name == name[0]][0]
+                click.echo(view.name)
 
 @jenkins.command('jobs')
 def jobs():
