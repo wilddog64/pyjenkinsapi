@@ -69,8 +69,14 @@ class Jenkins:
 
 if __name__ == '__main__':
     import jenkinsapi.core
+    from jenkinsapi.config.core import config_section_map
     config_file = 'jenkins.ini'
-    jenkins = jenkinsapi.core.Jenkins(config_file=config_file, section='lcjenkins')
+    jenkins_config = config_section_map(config_file='jenkins.ini', section_name='lcjenkins')
+    jenkins_user = jenkins_config['user']
+    jenkins_password = jenkins_config['password']
+    jenkins_server_url = jenkins_config['url']
+
+    jenkins = jenkinsapi.core.Jenkins(jenkins_server_url, jenkins_user, jenkins_password)
     print('jenkins url: %s' % jenkins.url)
     print('jenkins user: %s' % jenkins.user)
 
