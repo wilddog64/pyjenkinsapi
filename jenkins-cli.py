@@ -16,14 +16,14 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
     jenkins_user = jenkins_config['user'] if jenkins_user == '' else jenkins_user
     jenkins_password = jenkins_config['password'] if jenkins_password == '' else jenkins_password
     jenkins_server_url = jenkins_config['url'] if jenkins_server_url == '' else jenkins_server_url
-    ctx.meta['jenkins'] = jenkinsapi.core.Jenkins(jenkins_server_url, jenkins_user, jenkins_password)
+    ctx.obj = jenkinsapi.core.Jenkins(jenkins_server_url, jenkins_user, jenkins_password)
 
 @jenkins.command('views')
 @click.option('-a', '--all', type=click.BOOL, is_flag=True, help='list all or a particular view', default=False)
 @click.argument('name', nargs=-1)
 @click.pass_context
 def views(ctx, all, name):
-    jenkins = ctx.meta['jenkins']
+    jenkins = ctx.obj
     if all:
         for view in jenkins.views:
             click.echo(view.name)
