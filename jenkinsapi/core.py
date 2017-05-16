@@ -5,15 +5,8 @@ import jenkins
 class Jenkins:
     def __init__(self, url='',
                        user='',
-                       password='',
-                       config_file_path='',
-                       config_file='',
-                       section=''):
+                       password=''):
 
-        # read configuration from jenkins.ini section
-        config_map = config_section_map(config_file_path=config_file_path,
-                                        config_file=config_file,
-                                        section_name=section)
 
         # if url, user, and password are not empty use them, otherwise, read them
         # from configuration file
