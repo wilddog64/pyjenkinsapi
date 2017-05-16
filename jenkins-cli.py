@@ -25,8 +25,7 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 def views(ctx, all, name):
     jenkins = ctx.obj
     if all:
-        for view in jenkins.views:
-            click.echo(view.name)
+        click.echo("\n".join(jenkins.jenkins.viewnames))
     else:
         if name:
             if jenkins.jenkins.view_exists(name[0]):
