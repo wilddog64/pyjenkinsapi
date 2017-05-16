@@ -19,8 +19,12 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
     ctx.meta['jenkins'] = jenkinsapi.core.Jenkins(jenkins_server_url, jenkins_user, jenkins_password)
 
 @jenkins.command('views')
-def views():
-    click.echo('a list of jenkins view')
+@click.option('-a', '--all', type=click.BOOL, is_flag=True, help='list all or a particular view', default=False)
+@click.pass_context
+def views(ctx, all):
+    if all:
+        for view in ctx.meta['jenkins'].views:
+            click.echo(view.name)
 
 @jenkins.command('jobs')
 def jobs():
