@@ -14,6 +14,9 @@ class Jenkins:
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
         self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
+        self._views = {}
+        for view in self._jenkins.views:
+            self._views[view.name] = view
 
     @property
     def user():
@@ -65,7 +68,7 @@ class Jenkins:
 
     @property
     def views(self):
-        return self.jenkins.views
+        return self._views
 
 if __name__ == '__main__':
     import jenkinsapi.core
@@ -82,13 +85,15 @@ if __name__ == '__main__':
 
     # list all the views for a given jenkins server
     for view in jenkins.views:
-        print(view.name)
+        print(view)
 
     # list all the jobs for a given jenkins server
     for job in jenkins.jobs:
         print(job.name)
 
     print('view qa sites job:')
-    qasites_view = [view for view in jenkins.views if view.name == 'QA Sites'][0]
-    for job in qasites_view.jobs:
-        print(job.name)
+    qasites_view = jenkins.views['QA Sites']
+    print('view name is %s' % qasites_view.name)
+    qasites_jobs = "\n".join(qasites_view.jobnames)
+    print("QA Sites jobs are:")
+    print(qasites_jobs)
