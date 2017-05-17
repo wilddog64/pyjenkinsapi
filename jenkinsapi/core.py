@@ -88,6 +88,9 @@ if __name__ == '__main__':
     for view in jenkins.views:
         print(view)
 
+    print('--- all views ---')
+    print(jenkins.views)
+
     # list all the jobs for a given jenkins server
     for job in jenkins.jobs:
         print(job.name)

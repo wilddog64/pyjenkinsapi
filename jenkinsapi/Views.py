@@ -11,3 +11,6 @@ class Views(dict):
 
     def __getitem__(self, name):
         return self.__dict__[name]
+
+    def __str__(self):
+        return "\n".join(self.__dict__.keys())
