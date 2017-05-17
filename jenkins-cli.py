@@ -38,6 +38,5 @@ def views(ctx, all, jobs, names):
 def jobs():
     click.echo('list all jobs from a given jenkins servers')
 
-
 if __name__ == '__main__':
     jenkins()
