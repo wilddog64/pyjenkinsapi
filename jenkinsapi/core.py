@@ -90,14 +90,20 @@ if __name__ == '__main__':
 
     print('--- all views ---')
     print(jenkins.views)
+    print('')
 
     # list all the jobs for a given jenkins server
+    print('--- all jobs ---')
     for job in jenkins.jobs:
         print(job.name)
 
-    print('view qa sites job:')
+    print('')
+
+    print('--- view qa sites job: ---')
     qasites_view = jenkins.views['QA Sites']
     print('view name is %s' % qasites_view.name)
     qasites_jobs = "\n".join(qasites_view.jobnames)
-    print("QA Sites jobs are:")
+    print('')
+    print("--- QA Sites jobs are: ---")
     print(qasites_jobs)
+    print('')
