@@ -1,5 +1,5 @@
 from __future__ import print_function
-import jenkinsapi.Views
+import jenkinsapi.views
 from jenkinsapi.config.core import config_section_map
 import jenkins
 
@@ -15,7 +15,7 @@ class Jenkins:
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
         self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
-        self._views = jenkinsapi.Views.Views()
+        self._views = jenkinsapi.views.Views()
         for view in self._jenkins.views:
             self._views[view.name] = view
 
