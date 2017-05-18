@@ -20,7 +20,7 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 
 @jenkins.command('views')
 @click.option('-a', '--all', type=click.BOOL, is_flag=True, help='list all or a particular view', default=False)
-@click.Option('-j', '--jobs', type=click.BOOL, is_flag=True, help='list jobs for views', default=False)
+@click.option('-j', '--jobs', type=click.BOOL, is_flag=True, help='list jobs for views', default=False)
 @click.argument('names', nargs=-1)
 @click.pass_context
 def views(ctx, all, jobs, names):
