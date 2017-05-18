@@ -28,12 +28,13 @@ def views(ctx, all, jobs, names):
     if all:
         click.echo(jenkins.views)
     else:
-        views = []
         if names:
             for name in names:
-                if jenkins.jenkins.view_exists(name):
-                    views.append(name)
-            click.echo("\n".join(views))
+                click.echo('view %s has these jobs:' % name)
+                click.echo('=======================')
+                jobs = [job.name for job in jenkins.views[name].jobs]
+                print("\n".join(jobs))
+                print('')
 
 @jenkins.command('jobs')
 def jobs():
