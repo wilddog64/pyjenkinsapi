@@ -26,7 +26,7 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 def views(ctx, all, jobs, names):
     jenkins = ctx.obj
     if all:
-        click.echo("\n".join(jenkins.jenkins.viewnames))
+        click.echo(jenkins.views)
     else:
         views = []
         if names:
