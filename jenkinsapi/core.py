@@ -1,4 +1,5 @@
 from __future__ import print_function
+import jenkinsapi.views
 from jenkinsapi.config.core import config_section_map
 import jenkins
 
@@ -14,7 +15,7 @@ class Jenkins:
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
         self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
-        self._views = {}
+        self._views = jenkinsapi.views.Views()
         for view in self._jenkins.views:
             self._views[view.name] = view
 
@@ -87,13 +88,22 @@ if __name__ == '__main__':
     for view in jenkins.views:
         print(view)
 
+    print('--- all views ---')
+    print(jenkins.views)
+    print('')
+
     # list all the jobs for a given jenkins server
+    print('--- all jobs ---')
     for job in jenkins.jobs:
         print(job.name)
 
-    print('view qa sites job:')
+    print('')
+
+    print('--- view qa sites job: ---')
     qasites_view = jenkins.views['QA Sites']
     print('view name is %s' % qasites_view.name)
     qasites_jobs = "\n".join(qasites_view.jobnames)
-    print("QA Sites jobs are:")
+    print('')
+    print("--- QA Sites jobs are: ---")
     print(qasites_jobs)
+    print('')
