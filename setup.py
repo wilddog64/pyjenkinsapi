@@ -1,3 +1,4 @@
+from setuptools import setup, find_packages
 setup(
     name='jenkinsapi',
     version='0.1',
@@ -8,6 +9,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        yourscript=yourpackage.scripts.yourscript:cli
+        jenkins-cli=jenkinsapi.scripts.jenkins_cli:jenkins
     ''',
 )
