@@ -2,7 +2,7 @@ import click
 import jenkinsapi.core
 from jenkinsapi.config.core import config_section_map
 
-@click.group()
+@click.group(chain=True)
 @click.option('-c', '--config-path', help='jenkins-cli configuration path', default='')
 @click.option('--section-name', help='section in jenkins-cli configuration file', default='lcjenkins')
 @click.option('-s', '--jenkins-server-url', help='jenkins server url', default='')
