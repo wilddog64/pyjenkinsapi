@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from setuptools import setup, find_packages
 setup(
     name='jenkinsapi',
@@ -9,6 +10,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        jenkins-cli=jenkinsapi.scripts.jenkins_cli:jenkins
+        jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins
     ''',
 )
