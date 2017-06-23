@@ -1,5 +1,7 @@
 import click
 import jenkinsapi.core
+import os
+from pathlib2 import Path
 from jenkinsapi.config.core import config_section_map
 
 @click.group()
@@ -20,24 +22,55 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 
 @jenkins.command('views')
 @click.option('-a', '--all', type=click.BOOL, is_flag=True, help='list all or a particular view', default=False)
-@click.option('-j', '--jobs', type=click.BOOL, is_flag=True, help='list jobs for views', default=False)
+@click.option('-j', '--jobs', type=click.BOOL, is_flag=True, help='list jobs for views', default='/tmp/jenkins')
+@click.option('--save-all-jobs', type=click.BOOL, is_flag=True, help='save all jobs')
+@click.option('--save-job', help='save a particular job for this view')
+@click.option('-p', '--path', help='a path to save job defintions')
 @click.argument('names', nargs=-1)
-@click.pass_context
-def views(ctx, all, jobs, names):
-    jenkins = ctx.obj
+@click.pass_obj
+def views(jenkins, all, jobs, save_all_jobs, save_job, path, names):
     if all:
         click.echo(jenkins.views)
     else:
-        views = []
         if names:
             for name in names:
-                if jenkins.jenkins.view_exists(name):
-                    views.append(name)
-            click.echo("\n".join(views))
+                click.echo('view %s has these jobs:' % name)
+                click.echo('=======================')
+                jobs = [job.name for job in jenkins.views[name].jobs]
+                print("\n".join(jobs))
+                print('')
+
+    if save_all_jobs:
+        for job in jenkins.views[name].jobs:
+            save_job_configs(job, name, path)
+    elif save_job != '':
+        job = [job.name for job in jenkins.views[name].jobs if job.name == save_job][0]
+        if job:
+            save_job_configs(job, name, path)
+
 
 @jenkins.command('jobs')
 def jobs():
     click.echo('list all jobs from a given jenkins servers')
+
+def save_job_configs(job, view_name, jobs_dir):
+    '''
+
+    '''
+    path = os.path.join(jobs_dir, view_name)
+    if not is_path_exists(path):
+        os.makedirs(path)
+
+    job_config_path = os.path.join(path, "%s.%s" % (job.name, 'xml'))
+    click.echo('writing %s to %s' %  (job.name, job_config_path) )
+    with open(job_config_path, 'w') as f:
+        f.writelines(job.config)
+
+
+def is_path_exists(directory):
+    path = Path(directory)
+
+    return path.exists()
 
 if __name__ == '__main__':
     jenkins()
