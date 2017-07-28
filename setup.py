@@ -6,9 +6,10 @@ setup(
     include_package_data=True,
     install_requires=[
         'Click',
+        'pathlib2'
     ],
     entry_points='''
         [console_scripts]
-        jenkins-cli=jenkinsapi.scripts.jenkins_cli:jenkins
+        jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins
     ''',
 )
