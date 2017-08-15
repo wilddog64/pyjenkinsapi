@@ -11,5 +11,6 @@ setup(
     entry_points='''
         [console_scripts]
         jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins
+        serverlist=jenkinsapi.scripts.serverlist:main
     ''',
 )

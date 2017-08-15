@@ -1,5 +1,6 @@
 from __future__ import print_function
 import xmltodict
+import ConfigParser
 
 def load_xmlfile(xmlfile=''):
     with open(xmlfile) as xmlhandle:
@@ -28,13 +29,37 @@ def process_data(xmlfile=''):
         for server in cluster['server']:
             server_name = server['name']
             server_port = 80
-            server_name = server_name[1:server_name.index(':')] \
+            server_name = server_name[0:server_name.index(':')] \
                     if ':' in server_name else server_name
             if 'jenkins_job' in server:
                 jenkins_job_url = server['jenkins_job']
                 jenkins_job_name = jenkins_job_url[jenkins_job_url.rindex('/') + 1:len(jenkins_job_url)]
             data[cluster_id][cluster_name].append({server_name: {'port': server_port, 'jenkins_job_name': jenkins_job_name, 'jenkins_job_url': jenkins_job_url}})
     return data
+
+def generate_inventory_file(data):
+    title = ''
+    inventory_file = './inventory'
+    titles = list()
+    with open(inventory_file, 'w') as inventory_filehandle:
+        for cluster_id, clusters in data.items():
+            if 'SaaS' in clusters:
+                title = '[learn-saas-%s]' % cluster_id
+                titles.append('learn-saas-%s' % cluster_id)
+            else:
+                title = '[learn-%s]' % cluster_id
+                titles.append('learn-%s' % cluster_id)
+            inventory_filehandle.write("%s\n" % title)
+            for cluster, servers in clusters.items():
+                for server in servers:
+                    for server_name, server_info in server.items():
+                        line = "%s\n" % server_name
+                        inventory_filehandle.write(line)
+            inventory_filehandle.write("\n")
+
+        inventory_filehandle.write('[learn:children]\n')
+        for title in titles:
+            inventory_filehandle.write("%s\n" % title)
 
 def main():
     data = process_data('/Users/cliang/src/gitrepo/blackboard/jenkins/learn-server-status/src/main/resources/servers.xml')
@@ -45,4 +70,5 @@ if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=2)
     
     data = main()
+    generate_inventory_file(data)
     pp.pprint(data)
