@@ -45,12 +45,8 @@ def generate_inventory_file(data):
     inventory_filehandle = None
     with open(inventory_file, 'w+') as inventory_filehandle:
         for cluster_id, clusters in data.items():
-            if 'SaaS' in clusters:
-                title = '[learn-saas-%s]' % cluster_id
-                titles.append('learn-saas-%s' % cluster_id)
-            else:
-                title = '[learn-%s]' % cluster_id
-                titles.append('learn-%s' % cluster_id)
+            title = '[learn-%s]' % cluster_id
+            titles.append('learn-%s' % cluster_id)
             inventory_filehandle.write("%s\n" % title)
             for cluster, servers in clusters.items():
                 for server in servers:
