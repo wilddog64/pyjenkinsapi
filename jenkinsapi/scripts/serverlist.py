@@ -5,12 +5,12 @@ import ConfigParser
 def load_xmlfile(xmlfile=''):
     with open(xmlfile) as xmlhandle:
         xmldata = xmlhandle.read()
-    
+
     return xmldata
 
 def load_xmldata_as_python_obj(xmldata):
     xmlobj = xmltodict.parse(xmldata)
-    
+
     return xmlobj
 
 def process_data(xmlfile=''):
@@ -41,7 +41,8 @@ def generate_inventory_file(data):
     title = ''
     inventory_file = './inventory'
     titles = list()
-    with open(inventory_file, 'w') as inventory_filehandle:
+    inventory_filehandle = None
+    with open(inventory_file, 'w+') as inventory_filehandle:
         for cluster_id, clusters in data.items():
             if 'SaaS' in clusters:
                 title = '[learn-saas-%s]' % cluster_id
@@ -60,6 +61,12 @@ def generate_inventory_file(data):
         inventory_filehandle.write('[learn:children]\n')
         for title in titles:
             inventory_filehandle.write("%s\n" % title)
+        inventory_filehandle.write("\n")
+
+        # write out [learn:vars]
+        inventory_filehandle.write("[learn:vars]\n")
+        inventory_filehandle.write("ansible_user=root\n")
+        inventory_filehandle.write("\n")
 
 def main():
     data = process_data('/Users/cliang/src/gitrepo/blackboard/jenkins/learn-server-status/src/main/resources/servers.xml')
@@ -68,7 +75,7 @@ def main():
 if __name__ == '__main__':
     import pprint
     pp = pprint.PrettyPrinter(indent=2)
-    
+
     data = main()
     generate_inventory_file(data)
     pp.pprint(data)
