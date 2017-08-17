@@ -28,6 +28,25 @@ def load_xmldata_as_python_obj(xmldata):
     return xmlobj
 
 def process_xmldata(xmlfile=''):
+    '''
+    parse a servers.xml and return an easy manipulate python data structure.
+
+    This function takes one parameter
+
+    * xmlfile is a full path points to where servers.xml located
+
+    Upon success, the function returns a nested dictionary structure like this,
+
+    { cluster_id: {
+          cluster_name: [
+              { server_name: {
+                   port: port number,
+                   jenkins_job_name: jenkins job name,
+                   jenkins_job_url: jenkins job url
+              } }
+          ]
+    } }
+    '''
     xmldata = load_xmlfile(xmlfile)
     xmlobj = load_xmldata_as_python_obj(xmldata)
 
