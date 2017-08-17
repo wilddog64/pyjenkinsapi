@@ -16,6 +16,13 @@ def load_xmlfile(xmlfile=''):
     return xmldata
 
 def load_xmldata_as_python_obj(xmldata):
+    '''
+    parse an xml file as a Python dict object
+
+    This function takes one parameter
+
+    xmldata is a string that contains a valid xml structure
+    '''
     xmlobj = xmltodict.parse(xmldata)
 
     return xmlobj
