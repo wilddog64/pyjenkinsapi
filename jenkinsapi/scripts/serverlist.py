@@ -3,6 +3,13 @@ import xmltodict
 import ConfigParser
 
 def load_xmlfile(xmlfile=''):
+    '''
+    read an xml file into a string, and return it.
+
+    This function takes one parameter,
+
+    * xmlfile is a full path to where the xml file is
+    '''
     with open(xmlfile) as xmlhandle:
         xmldata = xmlhandle.read()
 
