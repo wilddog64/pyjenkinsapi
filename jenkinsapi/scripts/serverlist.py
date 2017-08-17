@@ -27,7 +27,7 @@ def load_xmldata_as_python_obj(xmldata):
 
     return xmlobj
 
-def process_data(xmlfile=''):
+def process_xmldata(xmlfile=''):
     xmldata = load_xmlfile(xmlfile)
     xmlobj = load_xmldata_as_python_obj(xmldata)
 
@@ -85,7 +85,7 @@ def generate_inventory_file(data):
         inventory_filehandle.write("\n")
 
 def main():
-    data = process_data('/Users/cliang/src/gitrepo/blackboard/jenkins/learn-server-status/src/main/resources/servers.xml')
+    data = process_xmldata('/Users/cliang/src/gitrepo/blackboard/jenkins/learn-server-status/src/main/resources/servers.xml')
     return data
 
 if __name__ == '__main__':
