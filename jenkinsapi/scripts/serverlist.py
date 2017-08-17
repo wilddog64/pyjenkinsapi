@@ -61,7 +61,7 @@ def generate_inventory_file(data):
             inventory_filehandle.write("\n")
 
         inventory_filehandle.write('[learn:children]\n')
-        for title in titles:
+        for title in sorted(titles):
             inventory_filehandle.write("%s\n" % title)
         inventory_filehandle.write("\n")
 
