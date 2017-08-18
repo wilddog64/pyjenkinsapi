@@ -29,6 +29,7 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 @click.argument('names', nargs=-1)
 @click.pass_obj
 def views(jenkins, all, jobs, save_all_jobs, save_job, path, names):
+    save_job = '' if save_job == None else save_job
     if all:
         click.echo(jenkins.views)
     else:
