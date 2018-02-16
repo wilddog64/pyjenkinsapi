@@ -14,7 +14,7 @@ from jenkinsapi.config.core import config_section_map
 def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, jenkins_password):
     jenkins_config = config_section_map(config_file='jenkins.ini',
                                         config_file_path=config_path,
-                                        section_name='lcjenkins')
+                                        section_name='jenkins.bbpd.io')
     jenkins_user = jenkins_config['user'] if jenkins_user == '' else jenkins_user
     jenkins_password = jenkins_config['password'] if jenkins_password == '' else jenkins_password
     jenkins_server_url = jenkins_config['url'] if jenkins_server_url == '' else jenkins_server_url
