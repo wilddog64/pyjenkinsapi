@@ -2,19 +2,25 @@ from __future__ import print_function
 import jenkinsapi.views
 from jenkinsapi.config.core import config_section_map
 import jenkins
+import urllib3
 
 class Jenkins:
     def __init__(self, url='',
                        user='',
-                       password=''):
+                       password='',
+                       verify_ssl=False):
 
 
         # if url, user, and password are not empty use them, otherwise, read them
+        # if we disable verify ssl then we should also disable_warnings for ssl
+        if not self._verify_ssl:
+            urllib3.disable_warnings()
+
         # from configuration file
         self.url = url if url != '' else config_map['url']
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
-        self._jenkins = jenkins.Jenkins(self.url, self.user, self._password)
+        self._jenkins = jenkins.Jenkins(self.url, self.user, self._password, self.verify_ssl)
         self._views = jenkinsapi.views.Views()
         for view in self._jenkins.views:
             self._views[view.name] = view
@@ -70,6 +76,10 @@ class Jenkins:
     @property
     def views(self):
         return self._views
+
+    @property
+    def verify_ssl(self):
+        return self._verify_ssl
 
 if __name__ == '__main__':
     import jenkinsapi.core
