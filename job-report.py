@@ -8,7 +8,7 @@ import json
 # %% create jenkins-webapi object
 urllib3.disable_warnings()
 jenkins_user = os.environ['JENKINS_USER']
-jenkins_pacific_url = os.environ['JENKINS_PACIFIC_URL']
+jenkins_pacific_url = os.environ['JENKINS_URL']
 jenkins_api_token = os.environ['JENKINS_API_TOKEN']
 jenkins = Jenkins(jenkins_pacific_url, jenkins_user, jenkins_api_token, False)
 
