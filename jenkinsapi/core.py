@@ -13,6 +13,7 @@ class Jenkins:
 
         # if url, user, and password are not empty use them, otherwise, read them
         # if we disable verify ssl then we should also disable_warnings for ssl
+        self._verify_ssl = verify_ssl
         if not self._verify_ssl:
             urllib3.disable_warnings()
 
@@ -20,7 +21,7 @@ class Jenkins:
         self.url = url if url != '' else config_map['url']
         self.user = user if user != '' else config_map['user']
         self._password = password if password != '' else config_map['password']
-        self._jenkins = jenkins.Jenkins(self.url, self.user, self._password, self.verify_ssl)
+        self._jenkins = jenkins.Jenkins(self.url, self.user, self._password, self._verify_ssl)
         self._views = jenkinsapi.views.Views()
         for view in self._jenkins.views:
             self._views[view.name] = view
