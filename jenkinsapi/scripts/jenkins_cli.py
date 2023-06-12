@@ -3,6 +3,8 @@ import jenkinsapi.core
 import os
 from pathlib2 import Path
 from jenkinsapi.config.core import config_section_map
+from jenkinsapi.report import generate_job_report
+
 
 @click.group()
 @click.option('-c', '--config-path', help='jenkins-cli configuration path', default='')
@@ -36,9 +38,10 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 @click.option('--save-all-jobs', type=click.BOOL, is_flag=True, help='save all jobs')
 @click.option('--save-job', help='save a particular job for this view')
 @click.option('-p', '--path', help='a path to save job defintions')
+@click.option('-g', '--generate-report', type=click.BOOL, is_flag=False, help='generte json report for jobs in a given view')
 @click.argument('names', nargs=-1)
 @click.pass_obj
-def views(jenkins, all, jobs, save_all_jobs, save_job, path, names):
+def views(jenkins, all, jobs, save_all_jobs, save_job, path, generate_report, names):
     save_job = '' if save_job == None else save_job
     if all:
         click.echo(jenkins.views)
@@ -58,6 +61,10 @@ def views(jenkins, all, jobs, save_all_jobs, save_job, path, names):
         job = [job.name for job in jenkins.views[name].jobs if job.name == save_job][0]
         if job:
             save_job_configs(job, name, path)
+
+    if generate_report:
+        for name in names:
+            generate_job_report(jenkins.views[name])
 
 
 @jenkins.command('jobs')
