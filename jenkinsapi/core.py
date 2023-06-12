@@ -16,9 +16,9 @@ class Jenkins:
             urllib3.disable_warnings()
 
         # from configuration file
-        self.url = url if url != '' else config_map['url']
-        self.user = user if user != '' else config_map['user']
-        self._password = password if password != '' else config_map['password']
+        self.url = url
+        self.user = user
+        self._password = password
         self._jenkins = jenkins.Jenkins(self.url, self.user, self._password, self._verify_ssl)
         self._views = jenkinsapi.views.Views()
         for view in self._jenkins.views:
