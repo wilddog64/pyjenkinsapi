@@ -3,3 +3,4 @@ etc/
 tags
 jenkinsapi.egg-info/
 .python/
+.direnv/
