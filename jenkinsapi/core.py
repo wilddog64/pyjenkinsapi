@@ -6,11 +6,9 @@ import urllib3
 
 class Jenkins:
     def __init__(self, url='',
-                       user='',
-                       password='',
-                       verify_ssl=False):
-
-
+                 user='',
+                 password='',
+                 verify_ssl=False):
         # if url, user, and password are not empty use them, otherwise, read them
         # if we disable verify ssl then we should also disable_warnings for ssl
         self._verify_ssl = verify_ssl
