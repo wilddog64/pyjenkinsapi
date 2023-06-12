@@ -4,6 +4,7 @@ from jenkinsapi.config.core import config_section_map
 import jenkins
 import urllib3
 
+
 class Jenkins:
     def __init__(self, url='',
                  user='',
@@ -25,27 +26,27 @@ class Jenkins:
             self._views[view.name] = view
 
     @property
-    def user():
+    def user(self):
         return self._user;
 
     @user.setter
-    def user(value):
+    def user(self, value):
         self._user = value
 
     @property
-    def url():
+    def url(self):
         return self._url
 
     @url.setter
-    def url(value):
+    def url(self, value):
         self._url = value
 
     @property
-    def config_file_path():
+    def config_file_path(self):
         return config_file_path
 
     @config_file_path.setter
-    def config_file_path(value):
+    def config_file_path(self, value):
         self._config_file_path = value
 
     @property
@@ -53,7 +54,7 @@ class Jenkins:
         return self._config_file
 
     @config_file.setter
-    def config_file(value):
+    def config_file(self, value):
         self._config_file = value
 
     @property
@@ -61,7 +62,7 @@ class Jenkins:
         return self._section
 
     @section.setter
-    def section(value):
+    def section(self, value):
         self._section = section
 
     @property
