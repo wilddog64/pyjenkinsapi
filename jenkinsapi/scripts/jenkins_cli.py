@@ -20,8 +20,8 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
     # let's see if there're any environment variables defined
     environ = os.environ
     jenkins_user = environ['JENKINS_USER'] if 'JENKINS_USER' in environ else ''
-    jenkins_password = environ['JENKINS_API_TOKEN'] if 'JENKINS_API_TOKEN' in environ else ''
-    jenkins_server_url = environ['JENKINS_URL'] if 'JENKINS_URL' in environ else ''
+    jenkins_password = environ['JENKINS_API_TOKEN'] if 'JENKINS_API_TOKEN' in environ['JENKINS_API_TOKEN'] else ''
+    jenkins_server_url = environ['JENKINS_URL'] if 'JENKINS_URL' in environ['JENKINS_URL'] else ''
 
     if jenkins_config:
         jenkins_user = jenkins_config['user'] if jenkins_user == '' else jenkins_user
