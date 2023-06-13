@@ -38,7 +38,7 @@ def jenkins(ctx, jenkins_server_url, config_path, section_name, jenkins_user, je
 @click.option('--save-all-jobs', type=click.BOOL, is_flag=True, help='save all jobs')
 @click.option('--save-job', help='save a particular job for this view')
 @click.option('-p', '--path', help='a path to save job defintions')
-@click.option('-g', '--generate-report', type=click.BOOL, is_flag=False, help='generte json report for jobs in a given view')
+@click.option('-g', '--generate-report', type=click.BOOL, is_flag=True, help='generte json report for jobs in a given view')
 @click.argument('names', nargs=-1)
 @click.pass_obj
 def views(jenkins, all, jobs, save_all_jobs, save_job, path, generate_report, names):
