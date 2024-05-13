@@ -16,7 +16,7 @@ def load_ini_config(config_file='', config_file_path=''):
     else:
         script_etc = os.path.join(script_dir, '..', 'etc')
     jenkins_config_path = os.path.join(script_etc, config_file)
-    config = ConfigParser.ConfigParser()
+    config = ConfigParser()
     config.read(jenkins_config_path)
 
     return config
