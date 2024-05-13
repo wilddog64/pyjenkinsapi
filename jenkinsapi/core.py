@@ -80,14 +80,23 @@ class Jenkins:
     def verify_ssl(self):
         return self._verify_ssl
 
+    def build(self, job_name, job_number):
+        self.jenkins.build(job_name, job_number)
+
 if __name__ == '__main__':
     import jenkinsapi.core
+    import os
     from jenkinsapi.config.core import config_section_map
-    config_file = 'jenkins.ini'
-    jenkins_config = config_section_map(config_file='jenkins.ini', section_name='lcjenkins')
-    jenkins_user = jenkins_config['user']
-    jenkins_password = jenkins_config['password']
-    jenkins_server_url = jenkins_config['url']
+    # config_file = 'jenkins.ini'
+    # jenkins_config = config_section_map(config_file='jenkins.ini', section_name='lcjenkins')
+
+    jenkins_user = ''
+    jenkins_password = ''
+    jenkins_server_url = ''
+
+    jenkins_user = os.environ['JENKINS_USER']
+    jenkins_password = os.environ['JENKINS_USER_PASS']
+    jenkins_server_url = os.environ['JENKINS_SERVER_URL']
 
     jenkins = jenkinsapi.core.Jenkins(jenkins_server_url, jenkins_user, jenkins_password)
     print('jenkins url: %s' % jenkins.url)
@@ -108,11 +117,11 @@ if __name__ == '__main__':
 
     print('')
 
-    print('--- view qa sites job: ---')
-    qasites_view = jenkins.views['QA Sites']
-    print('view name is %s' % qasites_view.name)
-    qasites_jobs = "\n".join(qasites_view.jobnames)
+    print('--- view batch sites job: ---')
+    batch = jenkins.views['Batch']
+    print('view name is %s' % batch.name)
+    batch_jobs = "\n".join(batch.jobnames)
     print('')
     print("--- QA Sites jobs are: ---")
-    print(qasites_jobs)
+    print(batch_jobs)
     print('')
