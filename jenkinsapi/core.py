@@ -4,7 +4,6 @@ from jenkinsapi.config.core import config_section_map
 import jenkins
 import urllib3
 
-
 class Jenkins:
     def __init__(self, url='',
                  user='',
