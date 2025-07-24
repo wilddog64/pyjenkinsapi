@@ -4,6 +4,7 @@ from jenkinsapi.config.core import config_section_map
 import jenkins
 import urllib3
 
+
 class Jenkins:
     def __init__(self, url='',
                  user='',
@@ -26,7 +27,7 @@ class Jenkins:
 
     @property
     def user(self):
-        return self._user;
+        return self._user
 
     @user.setter
     def user(self, value):
