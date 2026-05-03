@@ -15,6 +15,7 @@ Add test coverage for the new Azure automation helpers so the repo can validate:
 2. Azure pipeline YAML structure
 3. Azure PR branch-policy helper behavior
 4. Azure secret rotation helper behavior
+5. Azure repo upload helper behavior
 
 The tests should stay lightweight and avoid real Azure DevOps or Copilot side effects.
 
@@ -37,6 +38,11 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
   - `--prompt-file`
   - `--model`
   - warning path for missing `.github/copilot-instructions.md`
+- `bin/pyjenkinsapi-azure-upload`
+  - option parsing and environment-variable fallback
+  - `--auto-detect` org/project inference from remote or Azure CLI defaults
+  - repo create-or-reuse behavior
+  - remote URL update and push mode dispatch
 
 ### Azure pipeline YAML
 - Validate the pipeline file parses cleanly.
@@ -54,6 +60,13 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
 - Verify secret input can come from stdin or a prompt without being echoed.
 - Mock Azure CLI/API calls to verify the helper updates the intended target.
 - Verify the secret value is not written to stdout/stderr.
+
+### Azure repo upload helper
+- Verify option parsing and environment-variable fallback.
+- Verify `--auto-detect` can infer org/project from an Azure remote when one exists and no org/project arguments are supplied.
+- Verify `--auto-detect` can fall back to Azure CLI defaults when no Azure remote exists and no org/project arguments are supplied.
+- Mock `az repos show` and `az repos create` calls to confirm the helper can create or reuse the repo.
+- Verify the helper updates the local remote and dispatches the expected push mode.
 
 ---
 
@@ -95,6 +108,7 @@ This plan does not modify them yet, but implementation will likely touch:
 - `bin/pyjenkinsapi-review`
 - `bin/pyjenkinsapi-azure-policy` or the future branch-policy helper script
 - `bin/pyjenkinsapi-azure-secret-rotate` or the future secret rotation helper script
+- `bin/pyjenkinsapi-azure-upload`
 - `memory-bank/activeContext.md`
 - `memory-bank/progress.md`
 
@@ -105,7 +119,7 @@ This plan does not modify them yet, but implementation will likely touch:
 - The new Azure helper scripts have local test coverage.
 - The Azure pipeline YAML is validated by a lightweight syntax or structure test.
 - Tests use stubs/mocks instead of live Azure or Copilot calls.
-- The test scope covers the repo-local wrappers and the Azure-specific helper behavior.
+- The test scope covers the repo-local wrappers and the Azure-specific helper behavior, including upload helper `--auto-detect`.
 - Memory-bank entries describe the test plan and current branch state.
 - The implementation is committed and pushed on `pyjenkinsapi-v0.1.0`.
 

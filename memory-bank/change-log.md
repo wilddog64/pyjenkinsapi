@@ -19,6 +19,7 @@
 - Added Azure PR branch-policy helper planning docs for automating Azure Repos PR validation from `bin/`.
 - Added Azure CI helper test planning docs for the repo-local wrappers, Azure pipeline YAML, and Azure-specific helper scripts.
 - Added Azure repo upload helper planning docs and a repo-local upload helper to publish `pyjenkinsapi` into Azure DevOps Git from `bin/`.
+- Added Azure CI helper test coverage notes for the repo upload helper's `--auto-detect` behavior when org/project are omitted.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
