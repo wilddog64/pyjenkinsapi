@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+_repo_root() {
+  git rev-parse --show-toplevel 2>/dev/null
+}
+
+_usage() {
+  cat <<'EOF'
+Usage: pyjenkinsapi-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [rigor review args...]
+
+Run rigor review with a repo-local default prompt and Copilot instructions.
+EOF
+}
+
+_warn() {
+  printf 'WARN: %s\n' "$*" >&2
+}
+
+default_prompt='Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs. Prioritize behavior regressions and compatibility risks over style-only comments.'
+prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
+prompt_file=""
+model="${PYJENKINSAPI_REVIEW_MODEL:-}"
+
+repo_root="$(_repo_root || true)"
+[[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
+repo_root="${repo_root:-$(pwd)}"
+cd "$repo_root"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --prompt)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --prompt requires a value\n' >&2; exit 1; }
+      prompt="$1"
+      ;;
+    --prompt-file)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --prompt-file requires a value\n' >&2; exit 1; }
+      prompt_file="$1"
+      ;;
+    --model)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --model requires a value\n' >&2; exit 1; }
+      model="$1"
+      ;;
+    -h|--help)
+      _usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+
+if [[ -n "$prompt_file" ]]; then
+  [[ -f "$prompt_file" ]] || { printf 'ERROR: prompt file not found: %s\n' "$prompt_file" >&2; exit 1; }
+  prompt="$(<"$prompt_file")"
+fi
+
+review_args=()
+if [[ -n "$model" ]]; then
+  review_args+=(--model "$model")
+fi
+
+if [[ ! -f .github/copilot-instructions.md ]]; then
+  _warn "Missing .github/copilot-instructions.md; review will fall back to Copilot defaults"
+fi
+
+exec "$repo_root/tools/rigor-cli/bin/rigor" review --prompt "$prompt" "${review_args[@]}" "$@"
