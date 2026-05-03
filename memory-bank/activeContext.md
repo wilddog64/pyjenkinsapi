@@ -7,6 +7,7 @@
 - Azure PR branch-policy helper planning is now queued to automate Azure Repos build validation from `bin/`.
 - Azure secret rotation helper planning remains queued as a separate maintenance command, similar in spirit to `bin/rotate-ghcr-pat`.
 - Azure CI helper test planning is now queued for the new wrappers, pipeline YAML, and Azure-specific helper scripts.
+- Azure repo upload helper is now implemented to publish `pyjenkinsapi` into Azure DevOps Git from `bin/`.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
@@ -14,6 +15,7 @@
 - Next task: implement the Azure PR branch-policy helper plan in `docs/plans/2026-05-03-azure-pr-branch-policy-helper.md` after approval.
 - Keep the Azure secret rotation helper plan aligned with the same `bin/` maintenance-command style.
 - Keep the Azure CI helper test plan aligned with the helper scripts and pipeline wiring.
+- Keep the Azure repo upload helper aligned with the same `bin/` maintenance-command style and confirm the branch upload mode before future changes.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes
