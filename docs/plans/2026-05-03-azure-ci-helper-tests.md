@@ -63,6 +63,7 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
 
 ### Azure repo upload helper
 - Verify option parsing and environment-variable fallback.
+- Verify `--auto-detect` prefers existing Azure remote metadata and Azure CLI defaults before prompting.
 - Verify interactive prompting fills in missing org/project values when stdin is a TTY.
 - Verify non-interactive execution fails fast when org/project cannot be determined.
 - Mock `az repos show` and `az repos create` calls to confirm the helper can create or reuse the repo.

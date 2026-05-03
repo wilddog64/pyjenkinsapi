@@ -17,6 +17,7 @@ Options:
   --repo NAME           Azure DevOps repository name (default: repo basename)
   --remote-name NAME    Local git remote name to create/update (default: azure)
   --push-mode MODE      current | all | mirror (default: all)
+  --auto-detect         Try to infer org/project from existing Azure context
   --create-repo         Create the Azure repo if it is missing (default)
   --no-create-repo      Do not create the Azure repo if it is missing
   --install-extension   Install or update the azure-devops Azure CLI extension
@@ -66,6 +67,7 @@ remote_name="${PYJENKINSAPI_AZURE_REMOTE_NAME:-azure}"
 push_mode="${PYJENKINSAPI_AZURE_PUSH_MODE:-all}"
 create_repo="${PYJENKINSAPI_AZURE_CREATE_REPO:-1}"
 install_extension="${PYJENKINSAPI_AZURE_INSTALL_EXTENSION:-0}"
+auto_detect="${PYJENKINSAPI_AZURE_AUTO_DETECT:-0}"
 dry_run=0
 
 _detect_from_remote_url() {
@@ -155,6 +157,9 @@ while [[ $# -gt 0 ]]; do
     --install-extension)
       install_extension=1
       ;;
+    --auto-detect)
+      auto_detect=1
+      ;;
     --dry-run)
       dry_run=1
       ;;
@@ -169,20 +174,22 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ -z "$org" || -z "$project" ]]; then
-  if git remote get-url "$remote_name" >/dev/null 2>&1; then
-    remote_guess="$(git remote get-url "$remote_name")"
-    if detected_values="$(_detect_from_remote_url "$remote_guess" 2>/dev/null)"; then
+if [[ "$auto_detect" -eq 1 ]]; then
+  if [[ -z "$org" || -z "$project" ]]; then
+    if git remote get-url "$remote_name" >/dev/null 2>&1; then
+      remote_guess="$(git remote get-url "$remote_name")"
+      if detected_values="$(_detect_from_remote_url "$remote_guess" 2>/dev/null)"; then
+        org="${org:-$(sed -n '1p' <<<"$detected_values")}"
+        project="${project:-$(sed -n '2p' <<<"$detected_values")}"
+      fi
+    fi
+  fi
+
+  if [[ -z "$org" || -z "$project" ]]; then
+    if detected_values="$(_detect_azure_defaults 2>/dev/null)"; then
       org="${org:-$(sed -n '1p' <<<"$detected_values")}"
       project="${project:-$(sed -n '2p' <<<"$detected_values")}"
     fi
-  fi
-fi
-
-if [[ -z "$org" || -z "$project" ]]; then
-  if detected_values="$(_detect_azure_defaults 2>/dev/null)"; then
-    org="${org:-$(sed -n '1p' <<<"$detected_values")}"
-    project="${project:-$(sed -n '2p' <<<"$detected_values")}"
   fi
 fi
 
