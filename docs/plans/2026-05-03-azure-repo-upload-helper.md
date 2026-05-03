@@ -18,7 +18,7 @@ The helper should make initial repo publication and later re-syncs repeatable fr
 ## Intended Behavior
 
 - Accept configuration via command-line options and/or environment variables.
-- Support an explicit `--auto-detect` mode that tries existing Azure remote metadata and Azure CLI defaults before prompting.
+- Support an explicit `--auto-detect` mode that tries existing Azure remote metadata and Azure CLI defaults, then fails fast if org/project still cannot be determined.
 - Prompt interactively for missing org/project when values are not provided and stdin is a TTY.
 - Use Azure DevOps CLI integration to create the target repository when missing.
 - Configure a local git remote pointing at the Azure DevOps repository.
@@ -50,7 +50,7 @@ The helper should make initial repo publication and later re-syncs repeatable fr
   - repository name
   - local remote name
   - push mode selection
-  - `--auto-detect` / `PYJENKINSAPI_AZURE_AUTO_DETECT=1` to try Azure context before prompting
+  - `--auto-detect` / `PYJENKINSAPI_AZURE_AUTO_DETECT=1` to try Azure context before deciding whether to fail fast
   - interactive prompt for missing org/project
 - Support a `--dry-run` or `--check` mode if practical.
 - Prefer an ensure-style flow that creates the Azure repo when missing and reuses it on later runs.
@@ -82,7 +82,7 @@ This plan does not modify them yet, but implementation will likely touch:
 - A repo-local `bin/` helper exists for Azure DevOps repo upload and remote setup.
 - The helper can create or reuse the Azure DevOps repository.
 - The helper supports configuration via command-line options and/or environment variables.
-- The helper supports `--auto-detect` as an explicit detection-first mode for org/project lookup.
+- The helper supports `--auto-detect` as an explicit detection-first mode for org/project lookup that fails fast if the values still cannot be inferred.
 - The helper prompts for missing org/project in interactive shells and fails fast in non-interactive shells when values are unavailable.
 - The helper uses shared vendored shell helpers where practical instead of duplicating plumbing.
 - The Azure repository can be created and populated without manual Azure DevOps UI editing.

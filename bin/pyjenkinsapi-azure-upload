@@ -191,6 +191,10 @@ if [[ "$auto_detect" -eq 1 ]]; then
       project="${project:-$(sed -n '2p' <<<"$detected_values")}"
     fi
   fi
+
+  if [[ -z "$org" || -z "$project" ]]; then
+    _err "--auto-detect could not infer org/project from an Azure remote or az defaults"
+  fi
 fi
 
 if [[ -z "$org" || -z "$project" ]]; then
