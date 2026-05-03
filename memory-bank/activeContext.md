@@ -4,11 +4,12 @@
 - Repository memory-bank now includes current-state tracking files to match the current Cline template.
 - `rigor-cli` is now vendored under `tools/rigor-cli/` on branch `pyjenkinsapi-v0.1.0` (subtree import at `a6d83d6`).
 - Azure pipeline implementation has started: repo-local bootstrap, lint, and review wrappers were added, and `azure-pipelines.yml` now wires them together.
+- Azure PR branch-policy helper planning is now queued to automate Azure Repos build validation from `bin/`.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
 - Treat `tools/rigor-cli/` as read-only vendored tooling unless the task explicitly refreshes the subtree.
-- Next task: keep the Azure pipeline prompt/auth wiring aligned with `docs/plans/2026-05-03-azure-review-instructions-and-prompt.md` and the secret rotation helper plan if adjustments are needed.
+- Next task: implement the Azure PR branch-policy helper plan in `docs/plans/2026-05-03-azure-pr-branch-policy-helper.md` after approval.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes

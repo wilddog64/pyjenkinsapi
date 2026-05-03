@@ -4,6 +4,7 @@
 - Memory-bank structure now includes `activeContext.md` and `progress.md` alongside the existing durable docs.
 - `rigor-cli` is vendored under `tools/rigor-cli/` on branch `pyjenkinsapi-v0.1.0`.
 - Azure pipeline implementation has started with repo-local bootstrap, lint, and review wrappers plus `azure-pipelines.yml`.
+- Azure PR branch-policy helper planning is queued for Azure DevOps PR validation automation.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -15,9 +16,10 @@
 - Dependency/bootstrap stage recorded as part of the Azure pipeline plan.
 - Azure secret rotation helper plan recorded in `docs/plans/2026-05-03-azure-secret-rotation-helper.md`.
 - Azure review instructions/prompt plan recorded in `docs/plans/2026-05-03-azure-review-instructions-and-prompt.md`.
+- Azure PR branch-policy helper plan recorded in `docs/plans/2026-05-03-azure-pr-branch-policy-helper.md`.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 
 ## Next Steps
-- Keep the Azure pipeline prompt/auth wiring aligned with the review prompt plan and secret rotation helper plan.
+- Await approval to implement the Azure PR branch-policy helper plan, then keep the pipeline/review helpers aligned as needed.
 - Keep summaries brief and use linked docs for longer details.
