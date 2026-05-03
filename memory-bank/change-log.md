@@ -13,6 +13,7 @@
 
 ### Updated
 - Imported `rigor-cli` as a vendored subtree under `tools/rigor-cli/` on branch `pyjenkinsapi-v0.1.0`.
+- Added Azure planning docs for lint/review pipeline structure, secret rotation helper, and Copilot review instructions/prompt behavior.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
