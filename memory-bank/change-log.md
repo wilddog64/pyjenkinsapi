@@ -17,6 +17,7 @@
 - Added repo-local `bin/pyjenkinsapi-bootstrap`, `bin/pyjenkinsapi-lint`, `bin/pyjenkinsapi-review`, and `.github/copilot-instructions.md` as the first implementation slice for Azure review/lint automation.
 - Added `azure-pipelines.yml` wiring the dependency/bootstrap, lint, and review wrappers together.
 - Added Azure PR branch-policy helper planning docs for automating Azure Repos PR validation from `bin/`.
+- Added Azure CI helper test planning docs for the repo-local wrappers, Azure pipeline YAML, and Azure-specific helper scripts.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
