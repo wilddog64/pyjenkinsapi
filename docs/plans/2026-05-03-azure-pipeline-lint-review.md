@@ -11,8 +11,9 @@
 
 Add an Azure DevOps pipeline that uses the vendored `rigor-cli` subtree to run:
 
-1. lint checks
-2. AI-assisted code review
+1. dependency/bootstrap preparation
+2. lint checks
+3. AI-assisted code review
 
 As part of the pipeline design, add a small wrapper/bootstrap layer to ensure the selected lint backend is available before `rigor lint` runs. Keep that wrapper separate from `rigor-cli` itself.
 
@@ -31,6 +32,11 @@ The pipeline should **not** introduce tests, deployment steps, packaging work, o
 ---
 
 ## Proposed Shape
+
+### Dependencies
+- Add a dedicated bootstrap step to prepare lint backends and any other required tooling before the review or lint stages run.
+- Keep backend installation policy outside `rigor-cli`.
+- Prefer repo-local or pipeline-local setup so the pipeline remains explicit about what gets installed.
 
 ### Lint
 - Use `rigor lint` for Python-oriented lint coverage.
@@ -57,7 +63,7 @@ The pipeline should **not** introduce tests, deployment steps, packaging work, o
 This plan does not modify them yet, but the implementation will likely touch:
 
 - Azure pipeline definition for the repo
-- one repo-local wrapper/bootstrap script or pipeline step for lint backend setup
+- one repo-local dependency/bootstrap script or pipeline step for lint backend setup
 - `.github/copilot-instructions.md`
 - `memory-bank/activeContext.md`
 - `memory-bank/progress.md`
@@ -69,6 +75,7 @@ This plan does not modify them yet, but the implementation will likely touch:
 - Azure pipeline runs lint successfully on the repository.
 - Azure pipeline runs `rigor review` successfully on the repository.
 - The pipeline does not require direct edits to the vendored `tools/rigor-cli/` subtree.
+- The pipeline has an explicit dependency/bootstrap stage before lint and review.
 - The pipeline or wrapper ensures lint backends are available before `rigor lint` executes.
 - If shared helpers are added, they live in `lib-foundation/scripts/system.sh` only as generic shell primitives.
 - Memory-bank entries describe the pipeline behavior and current branch state.
