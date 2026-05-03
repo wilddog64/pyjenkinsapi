@@ -11,5 +11,8 @@
 - `memory-bank/architecture-notes.md` with module responsibilities and CLI flow.
 - `memory-bank/development-playbook.md` with safe-edit workflow and lightweight validation.
 
+### Updated
+- Imported `rigor-cli` as a vendored subtree under `tools/rigor-cli/` on branch `pyjenkinsapi-v0.1.0`.
+
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

@@ -35,6 +35,7 @@ When making changes, prefer the smallest validation that proves correctness:
 - Keep existing public interfaces stable:
   - `jenkinsapi.core.Jenkins`
   - CLI command group `jenkins`
+- Treat `tools/rigor-cli/` as a vendored subtree; do not edit it directly unless the task is to refresh that subtree.
 
 ## Preferred Refactor Pattern
 1. Confirm existing behavior from source.
