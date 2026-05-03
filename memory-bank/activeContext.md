@@ -8,6 +8,7 @@
 - Azure secret rotation helper planning remains queued as a separate maintenance command, similar in spirit to `bin/rotate-ghcr-pat`.
 - Azure CI helper test planning is now queued for the new wrappers, pipeline YAML, and Azure-specific helper scripts.
 - Azure repo upload helper is now implemented to publish `pyjenkinsapi` into Azure DevOps Git from `bin/`.
+- Azure repo upload helper now supports explicit `--auto-detect` org/project discovery when possible.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
@@ -16,6 +17,7 @@
 - Keep the Azure secret rotation helper plan aligned with the same `bin/` maintenance-command style.
 - Keep the Azure CI helper test plan aligned with the helper scripts and pipeline wiring.
 - Keep the Azure repo upload helper aligned with the same `bin/` maintenance-command style and confirm the branch upload mode before future changes.
+- Keep the Azure repo upload helper's `--auto-detect` behavior aligned with Azure CLI defaults and existing Azure remotes.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes

@@ -8,6 +8,7 @@
 - Azure secret rotation helper planning remains queued as a `bin/` maintenance command.
 - Azure CI helper test planning is queued for the new wrappers and Azure-specific helper scripts.
 - Azure repo upload helper is implemented for publishing `pyjenkinsapi` into Azure DevOps Git from `bin/`.
+- Azure repo upload helper now supports `--auto-detect` for org/project discovery where possible.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -22,6 +23,7 @@
 - Azure PR branch-policy helper plan recorded in `docs/plans/2026-05-03-azure-pr-branch-policy-helper.md`.
 - Azure CI helper test plan recorded in `docs/plans/2026-05-03-azure-ci-helper-tests.md`.
 - Azure repo upload helper plan recorded in `docs/plans/2026-05-03-azure-repo-upload-helper.md`; helper now added under `bin/`.
+- Azure repo upload helper now has an explicit `--auto-detect` flag for Azure CLI defaults or existing Azure remotes.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 - The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.
@@ -30,4 +32,5 @@
 - Await approval to implement the Azure PR branch-policy helper plan, then keep the pipeline/review helpers aligned as needed.
 - Await approval to implement the Azure CI helper tests plan once the Azure helper scripts are in their final shape.
 - Revisit the Azure repo upload helper after the first Azure DevOps import to confirm whether all-branches/tags or current-branch mode should be the default.
+- Revisit the Azure repo upload helper's auto-detect behavior after first use to confirm whether the fallback order should change.
 - Keep summaries brief and use linked docs for longer details.

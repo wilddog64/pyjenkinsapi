@@ -17,6 +17,7 @@ Options:
   --repo NAME           Azure DevOps repository name (default: repo basename)
   --remote-name NAME    Local git remote name to create/update (default: azure)
   --push-mode MODE      current | all | mirror (default: all)
+  --auto-detect         Infer org/project from an Azure remote or az defaults
   --create-repo         Create the Azure repo if it is missing (default)
   --no-create-repo      Do not create the Azure repo if it is missing
   --install-extension   Install or update the azure-devops Azure CLI extension
@@ -66,7 +67,59 @@ remote_name="${PYJENKINSAPI_AZURE_REMOTE_NAME:-azure}"
 push_mode="${PYJENKINSAPI_AZURE_PUSH_MODE:-all}"
 create_repo="${PYJENKINSAPI_AZURE_CREATE_REPO:-1}"
 install_extension="${PYJENKINSAPI_AZURE_INSTALL_EXTENSION:-0}"
+auto_detect="${PYJENKINSAPI_AZURE_AUTO_DETECT:-0}"
 dry_run=0
+
+_detect_from_remote_url() {
+  local remote_url="$1"
+  local detected_org=""
+  local detected_project=""
+
+  if [[ "$remote_url" =~ ^https?://dev\.azure\.com/([^/]+)/([^/]+)/_git/[^/]+/?$ ]]; then
+    detected_org="${BASH_REMATCH[1]}"
+    detected_project="${BASH_REMATCH[2]}"
+  elif [[ "$remote_url" =~ ^https?://([^@/]+)@dev\.azure\.com/([^/]+)/([^/]+)/_git/[^/]+/?$ ]]; then
+    detected_org="${BASH_REMATCH[2]}"
+    detected_project="${BASH_REMATCH[3]}"
+  elif [[ "$remote_url" =~ ^ssh://[^@]+@ssh\.dev\.azure\.com/v3/([^/]+)/([^/]+)/[^/]+/?$ ]]; then
+    detected_org="${BASH_REMATCH[1]}"
+    detected_project="${BASH_REMATCH[2]}"
+  elif [[ "$remote_url" =~ ^git@ssh\.dev\.azure\.com:v3/([^/]+)/([^/]+)/[^/]+/?$ ]]; then
+    detected_org="${BASH_REMATCH[1]}"
+    detected_project="${BASH_REMATCH[2]}"
+  fi
+
+  if [[ -n "$detected_org" && -n "$detected_project" ]]; then
+    printf '%s\n%s\n' "$detected_org" "$detected_project"
+    return 0
+  fi
+
+  return 1
+}
+
+_detect_azure_defaults() {
+  local config_output
+  config_output="$(az devops configure -l --only-show-errors 2>/dev/null || true)"
+  local detected_org=""
+  local detected_project=""
+
+  if [[ "$config_output" =~ Organization[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+    detected_org="${BASH_REMATCH[1]}"
+  fi
+  if [[ "$config_output" =~ Project[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+    detected_project="${BASH_REMATCH[1]}"
+  fi
+
+  detected_org="$(printf '%s' "$detected_org" | sed 's/[[:space:]]*$//')"
+  detected_project="$(printf '%s' "$detected_project" | sed 's/[[:space:]]*$//')"
+
+  if [[ -n "$detected_org" && -n "$detected_project" ]]; then
+    printf '%s\n%s\n' "$detected_org" "$detected_project"
+    return 0
+  fi
+
+  return 1
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -95,6 +148,9 @@ while [[ $# -gt 0 ]]; do
       [[ $# -gt 0 ]] || _err "--push-mode requires a value"
       push_mode="$1"
       ;;
+    --auto-detect)
+      auto_detect=1
+      ;;
     --create-repo)
       create_repo=1
       ;;
@@ -118,8 +174,28 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-[[ -n "$org" ]] || _err "--org or PYJENKINSAPI_AZURE_ORG is required"
-[[ -n "$project" ]] || _err "--project or PYJENKINSAPI_AZURE_PROJECT is required"
+if [[ "$auto_detect" -eq 1 ]]; then
+  if [[ -z "$org" || -z "$project" ]]; then
+    if git remote get-url "$remote_name" >/dev/null 2>&1; then
+      remote_guess="$(git remote get-url "$remote_name")"
+      if detected_values="$(_detect_from_remote_url "$remote_guess" 2>/dev/null)"; then
+        org="${org:-$(sed -n '1p' <<<"$detected_values")}"
+        project="${project:-$(sed -n '2p' <<<"$detected_values")}"
+      fi
+    fi
+  fi
+
+  if [[ -z "$org" || -z "$project" ]]; then
+    if detected_values="$(_detect_azure_defaults 2>/dev/null)"; then
+      org="${org:-$(sed -n '1p' <<<"$detected_values")}"
+      project="${project:-$(sed -n '2p' <<<"$detected_values")}"
+    fi
+  fi
+fi
+
+if [[ -z "$org" || -z "$project" ]]; then
+  _err "--org and --project are required unless --auto-detect can infer both values"
+fi
 [[ -n "$repo_name" ]] || _err "--repo must not be empty"
 [[ -n "$remote_name" ]] || _err "--remote-name must not be empty"
 

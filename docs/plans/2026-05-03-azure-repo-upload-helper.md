@@ -18,6 +18,7 @@ The helper should make initial repo publication and later re-syncs repeatable fr
 ## Intended Behavior
 
 - Accept configuration via command-line options and/or environment variables.
+- Support an explicit `--auto-detect` mode that infers org/project from an Azure remote or Azure CLI defaults when possible.
 - Use Azure DevOps CLI integration to create the target repository when missing.
 - Configure a local git remote pointing at the Azure DevOps repository.
 - Push the repo content using a clear mode:
@@ -48,6 +49,7 @@ The helper should make initial repo publication and later re-syncs repeatable fr
   - repository name
   - local remote name
   - push mode selection
+  - auto-detect mode for org/project inference
 - Support a `--dry-run` or `--check` mode if practical.
 - Prefer an ensure-style flow that creates the Azure repo when missing and reuses it on later runs.
 
@@ -78,6 +80,7 @@ This plan does not modify them yet, but implementation will likely touch:
 - A repo-local `bin/` helper exists for Azure DevOps repo upload and remote setup.
 - The helper can create or reuse the Azure DevOps repository.
 - The helper supports configuration via command-line options and/or environment variables.
+- The helper supports an explicit `--auto-detect` mode for org/project discovery when possible.
 - The helper uses shared vendored shell helpers where practical instead of duplicating plumbing.
 - The Azure repository can be created and populated without manual Azure DevOps UI editing.
 - Memory-bank entries describe the helper and its intended use.
