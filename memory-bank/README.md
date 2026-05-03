@@ -10,6 +10,8 @@ This directory captures durable project context for future coding sessions.
 ## Files
 - `project-overview.md` — what this repo does, dependencies, entry points.
 - `architecture-notes.md` — module-level responsibilities and data flow.
+- `activeContext.md` — current work focus, recent decisions, and next steps.
+- `progress.md` — current status, milestones, and known issues.
 - `development-playbook.md` — editing rules, validation, and safe-change workflow.
 - `change-log.md` — concise running log of notable project-level changes.
 

@@ -45,4 +45,5 @@ When making changes, prefer the smallest validation that proves correctness:
 
 ## Documentation Expectations
 - Update `memory-bank/` notes when architectural assumptions change.
+- Keep `memory-bank/activeContext.md` current during work and `memory-bank/progress.md` current at milestones.
 - For non-trivial changes, add a short “why” explanation near complex logic.
