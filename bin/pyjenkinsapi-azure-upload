@@ -17,7 +17,6 @@ Options:
   --repo NAME           Azure DevOps repository name (default: repo basename)
   --remote-name NAME    Local git remote name to create/update (default: azure)
   --push-mode MODE      current | all | mirror (default: all)
-  --auto-detect         Infer org/project automatically; do not pass --org/--project
   --create-repo         Create the Azure repo if it is missing (default)
   --no-create-repo      Do not create the Azure repo if it is missing
   --install-extension   Install or update the azure-devops Azure CLI extension
@@ -67,10 +66,7 @@ remote_name="${PYJENKINSAPI_AZURE_REMOTE_NAME:-azure}"
 push_mode="${PYJENKINSAPI_AZURE_PUSH_MODE:-all}"
 create_repo="${PYJENKINSAPI_AZURE_CREATE_REPO:-1}"
 install_extension="${PYJENKINSAPI_AZURE_INSTALL_EXTENSION:-0}"
-auto_detect="${PYJENKINSAPI_AZURE_AUTO_DETECT:-0}"
 dry_run=0
-org_provided=0
-project_provided=0
 
 _detect_from_remote_url() {
   local remote_url="$1"
@@ -129,13 +125,11 @@ while [[ $# -gt 0 ]]; do
       shift
       [[ $# -gt 0 ]] || _err "--org requires a value"
       org="$1"
-      org_provided=1
       ;;
     --project)
       shift
       [[ $# -gt 0 ]] || _err "--project requires a value"
       project="$1"
-      project_provided=1
       ;;
     --repo)
       shift
@@ -151,9 +145,6 @@ while [[ $# -gt 0 ]]; do
       shift
       [[ $# -gt 0 ]] || _err "--push-mode requires a value"
       push_mode="$1"
-      ;;
-    --auto-detect)
-      auto_detect=1
       ;;
     --create-repo)
       create_repo=1
@@ -178,36 +169,40 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ "$auto_detect" -eq 1 ]]; then
-  if [[ "$org_provided" -eq 1 || "$project_provided" -eq 1 ]]; then
-    _err "--auto-detect cannot be combined with explicit --org or --project values"
-  fi
-
-  org=""
-  project=""
-
+if [[ -z "$org" || -z "$project" ]]; then
   if git remote get-url "$remote_name" >/dev/null 2>&1; then
     remote_guess="$(git remote get-url "$remote_name")"
     if detected_values="$(_detect_from_remote_url "$remote_guess" 2>/dev/null)"; then
-      org="$(sed -n '1p' <<<"$detected_values")"
-      project="$(sed -n '2p' <<<"$detected_values")"
-    fi
-  fi
-
-  if [[ -z "$org" || -z "$project" ]]; then
-    if detected_values="$(_detect_azure_defaults 2>/dev/null)"; then
-      org="$(sed -n '1p' <<<"$detected_values")"
-      project="$(sed -n '2p' <<<"$detected_values")"
+      org="${org:-$(sed -n '1p' <<<"$detected_values")}"
+      project="${project:-$(sed -n '2p' <<<"$detected_values")}"
     fi
   fi
 fi
 
 if [[ -z "$org" || -z "$project" ]]; then
-  if [[ "$auto_detect" -eq 1 ]]; then
-    _err "--auto-detect could not infer org/project from an Azure remote or az defaults"
+  if detected_values="$(_detect_azure_defaults 2>/dev/null)"; then
+    org="${org:-$(sed -n '1p' <<<"$detected_values")}"
+    project="${project:-$(sed -n '2p' <<<"$detected_values")}"
   fi
-  _err "--org and --project are required unless --auto-detect is used"
 fi
+
+if [[ -z "$org" || -z "$project" ]]; then
+  if [[ ! -t 0 ]]; then
+    _err "Unable to determine org/project and stdin is not a TTY. Pass --org and --project or set Azure DevOps defaults."
+  fi
+
+  if [[ -z "$org" ]]; then
+    printf 'Azure DevOps organization URL or name: ' >&2
+    IFS= read -r org || true
+  fi
+  if [[ -z "$project" ]]; then
+    printf 'Azure DevOps project: ' >&2
+    IFS= read -r project || true
+  fi
+fi
+
+[[ -n "$org" ]] || _err "Azure DevOps organization URL or name is required"
+[[ -n "$project" ]] || _err "Azure DevOps project is required"
 [[ -n "$repo_name" ]] || _err "--repo must not be empty"
 [[ -n "$remote_name" ]] || _err "--remote-name must not be empty"
 

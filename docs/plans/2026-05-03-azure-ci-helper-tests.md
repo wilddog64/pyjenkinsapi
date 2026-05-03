@@ -40,7 +40,7 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
   - warning path for missing `.github/copilot-instructions.md`
 - `bin/pyjenkinsapi-azure-upload`
   - option parsing and environment-variable fallback
-  - `--auto-detect` org/project inference from remote or Azure CLI defaults
+  - interactive prompt for missing org/project
   - repo create-or-reuse behavior
   - remote URL update and push mode dispatch
 
@@ -63,8 +63,8 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
 
 ### Azure repo upload helper
 - Verify option parsing and environment-variable fallback.
-- Verify `--auto-detect` can infer org/project from an Azure remote when one exists and no org/project arguments are supplied.
-- Verify `--auto-detect` can fall back to Azure CLI defaults when no Azure remote exists and no org/project arguments are supplied.
+- Verify interactive prompting fills in missing org/project values when stdin is a TTY.
+- Verify non-interactive execution fails fast when org/project cannot be determined.
 - Mock `az repos show` and `az repos create` calls to confirm the helper can create or reuse the repo.
 - Verify the helper updates the local remote and dispatches the expected push mode.
 
@@ -119,7 +119,7 @@ This plan does not modify them yet, but implementation will likely touch:
 - The new Azure helper scripts have local test coverage.
 - The Azure pipeline YAML is validated by a lightweight syntax or structure test.
 - Tests use stubs/mocks instead of live Azure or Copilot calls.
-- The test scope covers the repo-local wrappers and the Azure-specific helper behavior, including upload helper `--auto-detect`.
+- The test scope covers the repo-local wrappers and the Azure-specific helper behavior, including upload helper interactive prompting and non-interactive failure.
 - Memory-bank entries describe the test plan and current branch state.
 - The implementation is committed and pushed on `pyjenkinsapi-v0.1.0`.
 
