@@ -1,0 +1,48 @@
+# Cline Rules for `pyjenkinsapi`
+
+## Project Context
+- Language: Python (legacy-compatible style present in codebase)
+- Domain: Jenkins API wrapper + CLI tooling for views/jobs and config-driven auth
+- Entry points:
+  - `jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins`
+  - `serverlist=jenkinsapi.scripts.serverlist:main`
+
+## Primary Objectives for Changes
+1. Preserve existing CLI behavior and command names unless explicitly asked to change them.
+2. Keep backward compatibility with current module paths and public class names (especially `jenkinsapi.core.Jenkins`).
+3. Prefer minimal, surgical edits over broad rewrites.
+
+## Coding Standards
+- Follow existing project conventions first, then modernize only when requested.
+- Use clear, explicit names for Jenkins concepts (`view`, `job`, `config_section`, etc.).
+- Avoid introducing new runtime dependencies unless necessary.
+- Keep side effects in CLI functions; keep reusable logic in non-CLI modules.
+
+## Configuration & Secrets
+- Never hardcode real credentials, tokens, or Jenkins URLs.
+- Preserve config-driven behavior via `jenkins.ini` and `config_section_map(...)`.
+- Treat password fields as sensitive; do not log plaintext secrets.
+
+## Testing / Validation Expectations
+When making changes, prefer the smallest validation that proves correctness:
+1. Static sanity check: `python -m py_compile` for touched modules when practical.
+2. CLI smoke check: `python -m jenkinsapi.scripts.jenkins_cli --help` when entrypoints are edited.
+3. If behavior changes, document old vs new behavior in PR notes or commit message.
+
+## Editing Boundaries
+- Do not rename package/module structure without explicit request.
+- Do not remove legacy-compatible imports (`from __future__ import print_function`) unless requested.
+- Keep existing public interfaces stable:
+  - `jenkinsapi.core.Jenkins`
+  - CLI command group `jenkins`
+
+## Preferred Refactor Pattern
+1. Confirm existing behavior from source.
+2. Isolate bug / improvement.
+3. Patch only necessary lines.
+4. Re-scan related call sites (`search_files`) for consistency.
+5. Run lightweight validation commands.
+
+## Documentation Expectations
+- Update `memory-bank/` notes when architectural assumptions change.
+- For non-trivial changes, add a short “why” explanation near complex logic.
