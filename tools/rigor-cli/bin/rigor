@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+_RIGOR_BIN_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_RIGOR_LIB_DIR="${_RIGOR_BIN_DIR}/../scripts/lib/foundation/scripts/lib"
+
+# shellcheck disable=SC1091
+# shellcheck source=../scripts/lib/foundation/scripts/lib/system.sh
+source "${_RIGOR_LIB_DIR}/system.sh"
+# shellcheck disable=SC1091
+# shellcheck source=../scripts/lib/foundation/scripts/lib/agent_rigor.sh
+source "${_RIGOR_LIB_DIR}/agent_rigor.sh"
+
+_rigor_usage() {
+  echo "Usage: rigor <command> [args]"
+  echo ""
+  echo "Commands:"
+  echo "  checkpoint                          Stage all changes and create a git checkpoint commit"
+  echo "  audit                               Run agent audit checks on staged .sh and .yaml/.yml files"
+  echo "  lint [file…]                        Run configured linters (RIGOR_LINT_BACKENDS, default: sh:shellcheck)"
+  echo "  review [--prompt <text>] [args…]    Run AI review via configured backend (default: Copilot)"
+  exit 1
+}
+
+_rigor_review() {
+  local repo_root
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+  if [[ -n "$repo_root" && ! -f "$repo_root/.github/copilot-instructions.md" ]]; then
+    _warn "[rigor review] .github/copilot-instructions.md not found — Copilot will use default instructions"
+  fi
+  _ai_agent_review "$@"
+}
+
+_rigor_lint() {
+  local explicit_files=("$@")
+  local backends="${RIGOR_LINT_BACKENDS:-sh:shellcheck}"
+  local exit_code=0
+  local ran=0
+  local pair ext cmd
+
+  while IFS= read -r pair; do
+    [[ -z "$pair" ]] && continue
+    [[ "$pair" != *:* ]] && continue
+
+    ext="${pair%%:*}"
+    cmd="${pair##*:}"
+    [[ -z "$ext" || -z "$cmd" ]] && continue
+
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      _warn "rigor lint: backend '$cmd' for .$ext not found — skipping"
+      continue
+    fi
+
+    local matched=()
+    if [[ ${#explicit_files[@]} -gt 0 ]]; then
+      local f
+      for f in "${explicit_files[@]}"; do
+        [[ "$f" == *."$ext" ]] && matched+=("$f")
+      done
+    else
+      while IFS= read -r f; do
+        matched+=("$f")
+      done < <(git ls-files "*.$ext" 2>/dev/null || true)
+    fi
+
+    if [[ ${#matched[@]} -gt 0 ]]; then
+      ran=1
+      "$cmd" "${matched[@]}" || exit_code=$?
+    fi
+  done < <(printf '%s\n' "$backends" | tr ' ' '\n')
+
+  if [[ $ran -eq 0 && ${#explicit_files[@]} -eq 0 ]]; then
+    _warn "rigor lint: no files found for configured backends"
+  fi
+
+  return "$exit_code"
+}
+
+case "${1:-}" in
+  checkpoint) shift; _agent_checkpoint "$@" ;;
+  audit)      shift; _agent_audit "$@" ;;
+  lint)       shift; _rigor_lint "$@" ;;
+  review)     shift; _rigor_review "$@" ;;
+  *)          _rigor_usage ;;
+esac
