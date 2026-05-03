@@ -11,7 +11,7 @@
 
 Create a repo-local script with a role similar to `bin/rotate-ghcr-pat`, but for Azure DevOps secret variables or variable groups.
 
-The helper should make secret updates easy for maintainers without requiring manual UI edits.
+The helper should make secret updates easy for maintainers without requiring manual UI edits. It should feel like a normal maintenance command, not a special one-off admin procedure.
 
 ---
 
@@ -39,13 +39,14 @@ The helper should make secret updates easy for maintainers without requiring man
 ## Proposed Shape
 
 ### Script
-- Add a repo-local `bin/` helper with a name that clearly signals secret rotation.
+- Add a repo-local `bin/` helper with a name that clearly signals secret rotation, similar in spirit to `bin/rotate-ghcr-pat`.
 - Accept a target name and a secret input method.
 - Support a dry-run or confirmation mode if practical.
 
 ### Azure Integration
 - Update the relevant Azure DevOps secret store using a script-friendly API or CLI path.
 - Keep auth external to the helper, so the script can run non-interactively in maintenance workflows.
+- Prefer command-line options and environment variables over interactive-only flows, so the helper is usable in local admin shells and scripted maintenance sessions.
 
 ### Safety
 - Ensure no secret value is echoed back to the terminal.
@@ -66,7 +67,7 @@ This plan does not modify them yet, but implementation will likely touch:
 
 ## Definition of Done for the Future Implementation
 
-- A documented repo-local helper exists for Azure secret rotation.
+- A documented repo-local helper exists for Azure secret rotation and is comparable in usability to `bin/rotate-ghcr-pat`.
 - The helper can update the intended Azure secret target without manual UI editing.
 - The helper does not print secret contents.
 - Memory-bank entries describe the helper and its intended use.

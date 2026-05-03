@@ -5,6 +5,7 @@
 - `rigor-cli` is vendored under `tools/rigor-cli/` on branch `pyjenkinsapi-v0.1.0`.
 - Azure pipeline implementation has started with repo-local bootstrap, lint, and review wrappers plus `azure-pipelines.yml`.
 - Azure PR branch-policy helper planning is queued for Azure DevOps PR validation automation.
+- Azure secret rotation helper planning remains queued as a `bin/` maintenance command.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -19,6 +20,7 @@
 - Azure PR branch-policy helper plan recorded in `docs/plans/2026-05-03-azure-pr-branch-policy-helper.md`.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
+- The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.
 
 ## Next Steps
 - Await approval to implement the Azure PR branch-policy helper plan, then keep the pipeline/review helpers aligned as needed.
