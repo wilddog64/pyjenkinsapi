@@ -46,12 +46,12 @@ _redact_forbidden_fragments() {
   printf '%s' "$text"
 }
 
-default_prompt='Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs. Prioritize behavior regressions and compatibility risks over style-only comments.'
-prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
+default_prompt='Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs, and generate applicable path. Prioritize behavior regressions and compatibility risks over style-only comments.'
+prompt="${AI_REVIEW_PROMPT:-$default_prompt}"
 prompt_file=""
-model="${PYJENKINSAPI_REVIEW_MODEL:-}"
-stream_mode="${PYJENKINSAPI_REVIEW_STREAM:-on}"
-fail_on_findings="${PYJENKINSAPI_REVIEW_FAIL_ON_FINDINGS:-0}"
+model="${AI_REVIEW_MODEL:-}"
+stream_mode="${AI_REVIEW_STREAM:-on}"
+fail_on_findings="${AI_REVIEW_FAIL_ON_FINDINGS:-0}"
 stdin_contents=""
 stdin_has_data=0
 
@@ -59,7 +59,7 @@ repo_root="$(_repo_root || true)"
 [[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
 repo_root="${repo_root:-$(pwd)}"
 cd "$repo_root"
-rigor_bin="${PYJENKINSAPI_RIGOR_BIN:-$repo_root/tools/rigor-cli/bin/rigor}"
+rigor_bin="${AI_RIGOR_BIN:-$repo_root/tools/rigor-cli/bin/rigor}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
