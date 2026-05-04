@@ -13,7 +13,7 @@
 - `bin/pyjenkinsapi-review` now combines prompt instruction and `--prompt-file` diff context into a PR-style terminal review prompt, referencing large files by path instead of inlining them.
 - `bin/pyjenkinsapi-review` now redacts forbidden shell fragments from both prompt text and prompt-file content before invoking `rigor review` (`c0766be`).
 - A top-level `README.md` now mirrors the k3d-manager-style layout with Jenkins quick start, usage, architecture, directory layout, and docs sections.
-- A GitHub Actions CI workflow now lives at `.github/workflows/ci.yml` and runs shellcheck, bash syntax checks, Python compile checks, and the local BATS smoke test on pull requests to `main`.
+- A GitHub Actions CI workflow now lives at `.github/workflows/ci.yml` with a lint job and an optional PR review job on pull requests to `main`.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
@@ -27,7 +27,7 @@
 - Keep `bin/pyjenkinsapi-review` aligned with the PR-style review output plan in `docs/plans/2026-05-03-review-output-pr-style.md`, especially the file-reference behavior for large diffs.
 - Keep `bin/pyjenkinsapi-review` aligned with the prompt-file redaction plan in `docs/plans/2026-05-03-review-prompt-file-redaction.md`, especially the sanitized temp-file behavior.
 - Keep the new top-level `README.md` aligned with the repo’s actual entrypoints, vendored tooling boundaries, and memory-bank docs.
-- Keep `.github/workflows/ci.yml` aligned with the repo’s helper scripts, vendored tooling boundaries, and local BATS smoke tests.
+- Keep `.github/workflows/ci.yml` aligned with the repo’s helper scripts, vendored tooling boundaries, local BATS smoke tests, and PR review wrapper behavior.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes

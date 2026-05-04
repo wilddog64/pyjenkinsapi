@@ -13,7 +13,7 @@
 - Review wrapper output now combines prompt instruction and diff context into a PR-style terminal review prompt, referencing large files by path to keep the prompt manageable.
 - Prompt-file redaction is implemented in `bin/pyjenkinsapi-review` (`c0766be`) so blocked shell fragments are sanitized before invoking `rigor review`.
 - Top-level `README.md` has been added in a k3d-manager-style layout for Jenkins quick start, usage, architecture, directory layout, and docs.
-- GitHub Actions CI workflow added at `.github/workflows/ci.yml` for shellcheck, bash syntax, Python compile checks, and BATS on pull requests to `main`.
+- GitHub Actions CI workflow split into lint and optional review jobs at `.github/workflows/ci.yml` for pull requests to `main`.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -34,7 +34,7 @@
 - PR-style review prompt composition implemented in `bin/pyjenkinsapi-review`, including file-reference handling for large diffs.
 - PR-style review prompt sanitization is implemented for `bin/pyjenkinsapi-review`, with tests covering redaction and inline prompt-file mode.
 - README alignment is tracked in the memory bank so the new top-level docs stay consistent with the repo’s entrypoints and vendored tooling.
-- GitHub Actions workflow alignment is tracked so CI stays consistent with the repo-local helper scripts and smoke tests.
+- GitHub Actions workflow alignment is tracked so CI stays consistent with the repo-local helper scripts, smoke tests, and PR review wrapper behavior.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 - The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.
