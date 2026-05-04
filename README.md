@@ -147,7 +147,7 @@ setup.py               # package metadata and console scripts
 
 ## Notes
 
- - GitHub Actions CI lives in `.github/workflows/ci.yml` and runs a lint job plus an optional PR review job on pull requests to `main`.
+- GitHub Actions CI lives in `.github/workflows/ci.yml` and runs a lint job plus an optional PR review job on pull requests to `main`.
 - `tools/rigor-cli/` is vendored and should be treated as read-only unless a task explicitly refreshes the subtree.
 - `bin/pyjenkinsapi-review` is intentionally PR-style and local-first; it does not mutate the review prompt file on disk.
 - If you change the CLI surface, update the memory bank and the relevant plan docs together.
