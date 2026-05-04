@@ -26,6 +26,7 @@ repo_root="$(_repo_root || true)"
 [[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
 repo_root="${repo_root:-$(pwd)}"
 cd "$repo_root"
+rigor_bin="${PYJENKINSAPI_RIGOR_BIN:-$repo_root/tools/rigor-cli/bin/rigor}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -61,7 +62,9 @@ done
 
 if [[ -n "$prompt_file" ]]; then
   [[ -f "$prompt_file" ]] || { printf 'ERROR: prompt file not found: %s\n' "$prompt_file" >&2; exit 1; }
-  prompt="$(<"$prompt_file")"
+  prompt_file_contents="$(<"$prompt_file")"
+else
+  prompt_file_contents=""
 fi
 
 review_args=()
@@ -73,4 +76,18 @@ if [[ ! -f .github/copilot-instructions.md ]]; then
   _warn "Missing .github/copilot-instructions.md; review will fall back to Copilot defaults"
 fi
 
-exec "$repo_root/tools/rigor-cli/bin/rigor" review --prompt "$prompt" "${review_args[@]}" "$@"
+review_style_prompt='Respond in GitHub PR review style. Start with a short Summary, then Findings, then Notes or Suggestions. Keep comments concise and actionable. When possible, mention file paths and line numbers. If there are no findings, say that explicitly.'
+
+final_prompt="$review_style_prompt
+
+Review instruction:
+$prompt"
+
+if [[ -n "$prompt_file_contents" ]]; then
+  final_prompt="$final_prompt
+
+Review context from --prompt-file (${prompt_file}):
+$prompt_file_contents"
+fi
+
+exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "$@"
