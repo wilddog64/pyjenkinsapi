@@ -21,6 +21,8 @@ default_prompt='Review this pyjenkinsapi change for correctness, backward compat
 prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
 prompt_file=""
 model="${PYJENKINSAPI_REVIEW_MODEL:-}"
+stream_mode="${PYJENKINSAPI_REVIEW_STREAM:-on}"
+inline_prompt_file="${PYJENKINSAPI_REVIEW_INLINE_PROMPT_FILE:-0}"
 
 repo_root="$(_repo_root || true)"
 [[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
@@ -72,6 +74,17 @@ if [[ -n "$model" ]]; then
   review_args+=(--model "$model")
 fi
 
+has_stream=0
+for arg in "$@"; do
+  if [[ "$arg" == "--stream" ]]; then
+    has_stream=1
+    break
+  fi
+done
+if [[ "$has_stream" -eq 0 ]]; then
+  review_args+=(--stream "$stream_mode")
+fi
+
 if [[ ! -f .github/copilot-instructions.md ]]; then
   _warn "Missing .github/copilot-instructions.md; review will fall back to Copilot defaults"
 fi
@@ -84,10 +97,19 @@ Review instruction:
 $prompt"
 
 if [[ -n "$prompt_file_contents" ]]; then
-  final_prompt="$final_prompt
+  if [[ "$inline_prompt_file" -eq 1 ]]; then
+    final_prompt="$final_prompt
 
 Review context from --prompt-file (${prompt_file}):
 $prompt_file_contents"
+  else
+    final_prompt="$final_prompt
+
+Review context file:
+$prompt_file
+
+Inspect that file for the diff or context to review. Summarize findings in PR style."
+  fi
 fi
 
 exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "$@"

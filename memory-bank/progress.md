@@ -10,7 +10,7 @@
 - Azure repo upload helper is implemented for publishing `pyjenkinsapi` into Azure DevOps Git from `bin/`.
 - Azure repo upload helper now supports `--auto-detect` for detection-first org/project lookup and fails fast if org/project still cannot be inferred.
 - `.github/copilot-instructions.md` now gives repo-specific review guidance for compatibility, CI behavior, and vendored tooling boundaries.
-- Review wrapper output now combines prompt instruction and diff context into a PR-style terminal review prompt.
+- Review wrapper output now combines prompt instruction and diff context into a PR-style terminal review prompt, referencing large files by path to keep the prompt manageable.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -28,7 +28,7 @@
 - Azure repo upload helper now has detection-first lookup via `--auto-detect` and non-interactive failure when values are unavailable.
 - Copilot instructions refreshed for `pyjenkinsapi` review workflows.
 - PR-style review output plan recorded in `docs/plans/2026-05-03-review-output-pr-style.md`.
-- PR-style review prompt composition implemented in `bin/pyjenkinsapi-review`.
+- PR-style review prompt composition implemented in `bin/pyjenkinsapi-review`, including file-reference handling for large diffs.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 - The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.
