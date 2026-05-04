@@ -197,3 +197,42 @@ EOF
   [[ "$output" == *"No findings"* ]]
   [[ "$output" == *"AI_REVIEW_RESULT: no-findings"* ]]
 }
+
+@test "pyjenkinsapi-review compatibility alias preserves stdin" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  stdin_file="$(mktemp)"
+  cat >"$stdin_file" <<'EOF'
+diff --git a/legacy.py b/legacy.py
+--- a/legacy.py
++++ b/legacy.py
+@@ -1 +1 @@
+-legacy content
++legacy content
+EOF
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    bash -c 'cd "$1" && cat "$2" | ./bin/pyjenkinsapi-review --prompt "review these change"' _ "$repo_root" "$stdin_file"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Review context from stdin:"* ]]
+  [[ "$output" != *"PROMPT_FILE<<EOF"* ]]
+}
+
+@test "pyjenkinsapi-review compatibility alias preserves fail-on-findings" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    RIGOR_STUB_OUTPUT=$'Summary\n\nFindings\n- one issue\n\nAI_REVIEW_RESULT: findings' \
+    bash -c 'cd "$1" && ./bin/pyjenkinsapi-review --exit-code --prompt "review these change"' _ "$repo_root"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Findings"* ]]
+  [[ "$output" == *"AI_REVIEW_RESULT: findings"* ]]
+}

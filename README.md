@@ -153,4 +153,5 @@ setup.py               # package metadata and console scripts
 - `bin/ai-review` also accepts piped stdin as review context, so `git diff main...HEAD | bin/ai-review` works naturally.
 - `bin/ai-review --help` now mentions stdin usage directly.
 - `bin/ai-review --fail-on-findings` or `--exit-code` can be used in CI when review findings should fail the job.
+- `bin/pyjenkinsapi-review` remains as a compatibility alias for older scripts and simply forwards to `bin/ai-review`.
 - If you change the CLI surface, update the memory bank and the relevant plan docs together.

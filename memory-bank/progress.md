@@ -10,7 +10,7 @@
 - `ai-review` backend handoff now keeps its temp handling internal and passes only supported arguments to `rigor review`.
 - Copilot review feedback for the `ai-review` wrapper contract is documented in `docs/bugs/2026-05-04-ai-review-wrapper-contract-regression.md` and resolved in `bf47e67`.
 - CI now has an opt-in failure mode for review findings so `ai-review` can gate pipelines without breaking the default local workflow.
-- The legacy `pyjenkinsapi-review` name still needs a compatibility shim so the rename to `ai-review` remains backwards compatible.
+- The legacy `pyjenkinsapi-review` compatibility shim is restored and covered by tests.
 
 ## Milestones
 - `activeContext.md` and `progress.md` are in use for current-state tracking.
@@ -26,6 +26,7 @@
 - Wrapper-contract regression review feedback recorded in `docs/bugs/2026-05-04-ai-review-wrapper-contract-regression.md` and resolved in `bin/ai-review`.
 - `ai-review` CI failure-on-findings behavior recorded in `docs/plans/2026-05-04-ai-review-fail-on-findings.md` and implemented in `bin/ai-review`.
 - Legacy `pyjenkinsapi-review` compatibility alias bug recorded in `docs/bugs/2026-05-04-pyjenkinsapi-review-compatibility-alias-missing.md`.
+- Legacy `pyjenkinsapi-review` compatibility alias bug resolved with `bin/pyjenkinsapi-review`.
 
 ## Next Steps
 - Re-enable branch protection on `main`.

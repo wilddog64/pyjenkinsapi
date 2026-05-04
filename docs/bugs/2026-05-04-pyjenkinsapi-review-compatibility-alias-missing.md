@@ -1,6 +1,6 @@
 # Bug: legacy `pyjenkinsapi-review` entrypoint no longer has a compatibility alias
 
-**Status:** Open
+**Status:** Resolved
 **Branch:** `pyjenkinsapi-v0.1.1`
 **Files:** `bin/pyjenkinsapi-review` (missing), `bin/ai-review`, `README.md`
 
@@ -22,9 +22,6 @@ That leaves the rename slightly more disruptive than intended, even though the n
 
 The review comments specifically called out a missing compatibility path. Without an alias, the rename forces every caller to switch at once, which is avoidable friction for a repo-local helper.
 
-## Resolution Plan
+## Resolution
 
-- Add `bin/pyjenkinsapi-review` as a thin wrapper around `bin/ai-review`.
-- Add a smoke test that exercises the compatibility alias with stdin and CI failure mode behavior.
-- Record the compatibility shim in README/memory-bank notes.
-
+`bin/pyjenkinsapi-review` now exists as a thin wrapper around `bin/ai-review`, and the local test suite exercises the compatibility alias with stdin and CI failure mode behavior.
