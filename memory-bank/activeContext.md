@@ -8,8 +8,8 @@
 - Azure helper scripts, plans, and review/docs work remain available for future follow-up.
 - Helper naming cleanup is now implemented: repo-local helper scripts use `ai-*` names, and `rotate-secret` remains unprefixed.
 - `ai-review` stdin input support is now implemented so piped review context can be combined with `--prompt` and `--prompt-file`.
-- `ai-review` stdin help text is now a queued bug fix because the wrapper accepts piped input but does not explain it in `--help`.
-- `ai-review` backend handoff is now blocked on a bug fix because the wrapper currently forwards an unsupported `--prompt-file` flag to the vendored backend.
+- `ai-review` stdin help text is now fixed and documented in `--help`.
+- `ai-review` backend handoff is now fixed so the wrapper keeps its temp handling internal and passes only supported arguments to the vendored backend.
 
 ## Current Focus
 - Keep `main` protected again after the merge flow is complete.
@@ -17,8 +17,7 @@
 - Preserve compatibility for the legacy CLI and vendored tooling boundaries.
 - Keep the helper naming cleanup aligned with the repo-local `bin/` surface and docs references.
 - Keep the stdin-input support aligned with the existing `ai-review` prompt composition and redaction behavior.
-- Keep the stdin-help bug fix aligned with the wrapper help text and README guidance.
-- Keep the backend handoff fix aligned with the vendored `rigor review` CLI contract so the temp file remains internal to `ai-review`.
+- Keep the stdin-help and backend handoff fixes aligned with the wrapper help text, README guidance, and vendored `rigor review` CLI contract.
 
 ## Notes
 - Update this file after the next significant milestone or direction change.

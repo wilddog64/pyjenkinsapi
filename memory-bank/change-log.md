@@ -35,6 +35,7 @@
 - Implemented stdin review-context support in `ai-review` and added BATS coverage plus direct smoke validation.
 - Added a bug doc for the missing stdin help text in `ai-review` so the wrapper’s piped-input behavior is discoverable.
 - Added a bug doc for the backend `--prompt-file` leak so `ai-review` can keep its internal temp file private and only pass supported flags to `rigor review`.
+- Fixed `ai-review` help text and backend handoff so piped stdin is documented and the wrapper no longer forwards unsupported backend flags.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

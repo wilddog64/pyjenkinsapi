@@ -116,7 +116,8 @@ EOF
     bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change"' _ "$stdin_file"
 
   [ "$status" -eq 0 ]
-  [[ "$output" == *"PROMPT_FILE<<EOF"* ]]
+  [[ "$output" != *"PROMPT_FILE<<EOF"* ]]
+  [[ "$output" == *"Review context from stdin:"* ]]
   [[ "$output" == *"[redacted restricted shell fragment]"* ]]
   [[ "$output" != *"shell(git push --force)"* ]]
 }
@@ -152,7 +153,9 @@ EOF
     bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change" --prompt-file "$2"' _ "$stdin_file" "$prompt_file"
 
   [ "$status" -eq 0 ]
+  [[ "$output" != *"PROMPT_FILE<<EOF"* ]]
   [[ "$output" == *"prompt-file content"* ]]
   [[ "$output" == *"stdin content"* ]]
-  [[ "$output" == *"contains both the prompt-file and stdin content"* ]]
+  [[ "$output" == *"Review context from --prompt-file"* ]]
+  [[ "$output" == *"Review context from stdin:"* ]]
 }
