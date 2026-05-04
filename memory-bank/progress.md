@@ -9,7 +9,7 @@
 - `ai-review` stdin help text is now fixed and documented in `--help`.
 - `ai-review` backend handoff now keeps its temp handling internal and passes only supported arguments to `rigor review`.
 - Copilot review feedback for the `ai-review` wrapper contract is documented in `docs/bugs/2026-05-04-ai-review-wrapper-contract-regression.md` and resolved in `bf47e67`.
-- CI needs an opt-in failure mode for review findings so `ai-review` can gate pipelines without breaking the default local workflow.
+- CI now has an opt-in failure mode for review findings so `ai-review` can gate pipelines without breaking the default local workflow.
 
 ## Milestones
 - `activeContext.md` and `progress.md` are in use for current-state tracking.
@@ -23,7 +23,7 @@
 - Stdin-help bug recorded in `docs/bugs/2026-05-04-ai-review-stdin-help-missing.md` and resolved in `bin/ai-review`.
 - Backend-prompt-file leak bug recorded in `docs/bugs/2026-05-04-ai-review-backend-prompt-file-leak.md` and resolved in `bin/ai-review`.
 - Wrapper-contract regression review feedback recorded in `docs/bugs/2026-05-04-ai-review-wrapper-contract-regression.md` and resolved in `bin/ai-review`.
-- Planned `ai-review` CI failure-on-findings behavior recorded in `docs/plans/2026-05-04-ai-review-fail-on-findings.md`.
+- `ai-review` CI failure-on-findings behavior recorded in `docs/plans/2026-05-04-ai-review-fail-on-findings.md` and implemented in `bin/ai-review`.
 
 ## Next Steps
 - Re-enable branch protection on `main`.

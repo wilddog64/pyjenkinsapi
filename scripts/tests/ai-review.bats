@@ -36,9 +36,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-printf 'PROMPT<<EOF\n%s\nEOF\n' "$prompt"
-if [[ -n "$prompt_file" ]]; then
-  printf 'PROMPT_FILE<<EOF\n%s\nEOF\n' "$(cat "$prompt_file")"
+if [[ -n "${RIGOR_STUB_OUTPUT:-}" ]]; then
+  printf '%s\n' "$RIGOR_STUB_OUTPUT"
+else
+  printf 'PROMPT<<EOF\n%s\nEOF\n' "$prompt"
+  if [[ -n "$prompt_file" ]]; then
+    printf 'PROMPT_FILE<<EOF\n%s\nEOF\n' "$(cat "$prompt_file")"
+  fi
 fi
 EOF
   chmod +x "$stub_dir/rigor"
@@ -158,4 +162,38 @@ EOF
   [[ "$output" == *"stdin content"* ]]
   [[ "$output" == *"Review context from --prompt-file"* ]]
   [[ "$output" == *"Review context from stdin:"* ]]
+}
+
+@test "ai-review: fail-on-findings returns 1 when marker says findings" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    RIGOR_STUB_OUTPUT=$'Summary\n\nFindings\n- one issue\n\nAI_REVIEW_RESULT: findings' \
+    "$repo_root/bin/ai-review" \
+    --exit-code \
+    --prompt "review these change"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Findings"* ]]
+  [[ "$output" == *"AI_REVIEW_RESULT: findings"* ]]
+}
+
+@test "ai-review: fail-on-findings returns 0 when marker says no-findings" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_FAIL_ON_FINDINGS=1 \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    RIGOR_STUB_OUTPUT=$'Summary\n\nNo findings\n\nAI_REVIEW_RESULT: no-findings' \
+    "$repo_root/bin/ai-review" \
+    --prompt "review these change"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"No findings"* ]]
+  [[ "$output" == *"AI_REVIEW_RESULT: no-findings"* ]]
 }

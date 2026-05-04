@@ -7,7 +7,7 @@ _repo_root() {
 
 _usage() {
   cat <<'EOF'
-Usage: ai-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [rigor review args...]
+Usage: ai-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [--fail-on-findings|--exit-code] [rigor review args...]
 
 Run rigor review with a repo-local default prompt, stdin support, and Copilot instructions.
 
@@ -15,6 +15,9 @@ Piped stdin is accepted as review context. For example:
   git diff main...HEAD | bin/ai-review
 
 Use --prompt for the review instruction and --prompt-file for file-based context.
+
+Use --fail-on-findings or --exit-code when CI should return non-zero for review findings.
+In that mode, the review output must end with AI_REVIEW_RESULT: findings or AI_REVIEW_RESULT: no-findings.
 EOF
 }
 
@@ -48,6 +51,7 @@ prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
 prompt_file=""
 model="${PYJENKINSAPI_REVIEW_MODEL:-}"
 stream_mode="${PYJENKINSAPI_REVIEW_STREAM:-on}"
+fail_on_findings="${PYJENKINSAPI_REVIEW_FAIL_ON_FINDINGS:-0}"
 stdin_contents=""
 stdin_has_data=0
 
@@ -73,6 +77,9 @@ while [[ $# -gt 0 ]]; do
       shift
       [[ $# -gt 0 ]] || { printf 'ERROR: --model requires a value\n' >&2; exit 1; }
       model="$1"
+      ;;
+    --fail-on-findings|--exit-code)
+      fail_on_findings=1
       ;;
     -h|--help)
       _usage
@@ -133,6 +140,12 @@ final_prompt="$review_style_prompt
 Review instruction:
 $prompt"
 
+if [[ "$fail_on_findings" -eq 1 ]]; then
+  final_prompt="$final_prompt
+
+When you finish, end with exactly one final line of either AI_REVIEW_RESULT: findings if there are one or more findings, or AI_REVIEW_RESULT: no-findings if there are no findings."
+fi
+
 if [[ -n "$prompt_file_contents" ]]; then
   final_prompt="$final_prompt
 
@@ -145,6 +158,33 @@ if [[ "$stdin_has_data" -eq 1 ]]; then
 
 Review context from stdin:
 $stdin_contents"
+fi
+
+if [[ "$fail_on_findings" -eq 1 ]]; then
+  review_output_file="$(mktemp "${TMPDIR:-/tmp}/ai-review-output.XXXXXX")"
+  cleanup_review_output_file() {
+    [[ -n "${review_output_file:-}" && -f "$review_output_file" ]] && rm -f "$review_output_file"
+  }
+  trap cleanup_review_output_file EXIT INT TERM HUP
+
+  set +e
+  "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "$@" >"$review_output_file" 2>&1
+  review_rc=$?
+  set -e
+
+  cat "$review_output_file"
+  if [[ "$review_rc" -ne 0 ]]; then
+    exit "$review_rc"
+  fi
+  if grep -q '^AI_REVIEW_RESULT: findings$' "$review_output_file"; then
+    exit 1
+  fi
+  if grep -q '^AI_REVIEW_RESULT: no-findings$' "$review_output_file"; then
+    exit 0
+  fi
+
+  _warn "Review output did not include AI_REVIEW_RESULT marker; failing closed"
+  exit 1
 fi
 
 exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "$@"

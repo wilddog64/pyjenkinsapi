@@ -11,7 +11,7 @@
 - `ai-review` stdin help text is now fixed and documented in `--help`.
 - `ai-review` backend handoff is now fixed so the wrapper keeps its temp handling internal and passes only supported arguments to the vendored backend.
 - Copilot review feedback for the `ai-review` wrapper contract has been captured in a bug note and resolved in `bf47e67`.
-- `ai-review` needs an opt-in CI failure mode so review findings can return non-zero without changing the default local review flow.
+- `ai-review` now has an opt-in CI failure mode so review findings can return non-zero without changing the default local review flow.
 
 ## Current Focus
 - Keep `main` protected again after the merge flow is complete.
@@ -21,7 +21,7 @@
 - Keep the stdin-input support aligned with the existing `ai-review` prompt composition and redaction behavior.
 - Keep the stdin-help and backend handoff fixes aligned with the wrapper help text, README guidance, and vendored `rigor review` CLI contract.
 - Keep the recorded wrapper-contract review feedback aligned with the current `ai-review` stdin and backend behavior.
-- Keep the planned CI failure-on-findings behavior aligned with the existing PR-style review output contract.
+- Keep the CI failure-on-findings behavior aligned with the existing PR-style review output contract and result marker contract.
 
 ## Notes
 - Update this file after the next significant milestone or direction change.
