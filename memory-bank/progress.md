@@ -11,6 +11,7 @@
 - Azure repo upload helper now supports `--auto-detect` for detection-first org/project lookup and fails fast if org/project still cannot be inferred.
 - `.github/copilot-instructions.md` now gives repo-specific review guidance for compatibility, CI behavior, and vendored tooling boundaries.
 - Review wrapper output now combines prompt instruction and diff context into a PR-style terminal review prompt, referencing large files by path to keep the prompt manageable.
+- Prompt-file redaction planning is queued so `bin/pyjenkinsapi-review` can sanitize blocked shell fragments before invoking `rigor review`.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -29,6 +30,7 @@
 - Copilot instructions refreshed for `pyjenkinsapi` review workflows.
 - PR-style review output plan recorded in `docs/plans/2026-05-03-review-output-pr-style.md`.
 - PR-style review prompt composition implemented in `bin/pyjenkinsapi-review`, including file-reference handling for large diffs.
+- PR-style review prompt sanitization is planned for `bin/pyjenkinsapi-review` so blocked fragments can be redacted before review.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 - The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.

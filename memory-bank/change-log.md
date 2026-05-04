@@ -24,6 +24,7 @@
 - Rewrote `.github/copilot-instructions.md` to emphasize compatibility, repo boundaries, and CI review behavior.
 - Added a plan for PR-style terminal review output so `bin/pyjenkinsapi-review` can combine prompt instruction and diff context.
 - Implemented PR-style prompt composition in `bin/pyjenkinsapi-review` so `--prompt` and `--prompt-file` are combined instead of overriding each other.
+- Added a plan to redact forbidden shell fragments from `bin/pyjenkinsapi-review` prompt-file input before invoking `rigor review`.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
