@@ -29,6 +29,7 @@
 - Added a top-level `README.md` in a k3d-manager-style layout tailored to pyjenkinsapi’s Jenkins CLI, vendored tooling, and helper scripts.
 - Added `.github/workflows/ci.yml` and split it into lint and optional review jobs for pull requests to `main`.
 - Addressed Copilot PR review feedback by pinning the Copilot CLI install version in the workflow and adding `apt-get update` before shellcheck installation in the vendored workflow.
+- Compressed the memory-bank after merging PR #1, re-synced `main`, and re-enabled branch protection before starting `pyjenkinsapi-v0.1.2`.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
