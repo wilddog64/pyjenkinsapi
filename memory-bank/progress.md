@@ -26,5 +26,4 @@
 - `pyjenkinsapi-v0.1.3` is the current release branch and is tracked by draft PR #3.
 
 ## Next Steps
-- Re-enable branch protection on `main`.
 - Pick up the next scoped task on `pyjenkinsapi-v0.1.3`.

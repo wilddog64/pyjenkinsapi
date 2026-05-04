@@ -19,6 +19,7 @@
 - Keep the legacy review entrypoint compatibility alias aligned with `ai-review` behavior and docs.
 - Keep the CI review-context size guard aligned with the current diff generation approach.
 - Keep the new `pyjenkinsapi-v0.1.3` release branch aligned with the current shipped `main` state.
+- Keep branch protection on `main` enabled after the merge and release handoff.
 
 ## Notes
 - Update this file after the next significant milestone or direction change.
