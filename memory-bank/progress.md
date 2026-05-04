@@ -12,6 +12,7 @@
 - `.github/copilot-instructions.md` now gives repo-specific review guidance for compatibility, CI behavior, and vendored tooling boundaries.
 - Review wrapper output now combines prompt instruction and diff context into a PR-style terminal review prompt, referencing large files by path to keep the prompt manageable.
 - Prompt-file redaction is implemented in `bin/pyjenkinsapi-review` (`c0766be`) so blocked shell fragments are sanitized before invoking `rigor review`.
+- Top-level `README.md` has been added in a k3d-manager-style layout for Jenkins quick start, usage, architecture, directory layout, and docs.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.
@@ -31,6 +32,7 @@
 - PR-style review output plan recorded in `docs/plans/2026-05-03-review-output-pr-style.md`.
 - PR-style review prompt composition implemented in `bin/pyjenkinsapi-review`, including file-reference handling for large diffs.
 - PR-style review prompt sanitization is implemented for `bin/pyjenkinsapi-review`, with tests covering redaction and inline prompt-file mode.
+- README alignment is tracked in the memory bank so the new top-level docs stay consistent with the repo’s entrypoints and vendored tooling.
 - Repo-local bootstrap/lint/review wrappers added under `bin/`.
 - Azure pipeline YAML added at `azure-pipelines.yml`.
 - The Azure secret rotation helper is intended to mirror the usability of `bin/rotate-ghcr-pat`.

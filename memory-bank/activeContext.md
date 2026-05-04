@@ -12,6 +12,7 @@
 - `.github/copilot-instructions.md` has been rewritten to focus on compatibility, repo boundaries, and CI review behavior.
 - `bin/pyjenkinsapi-review` now combines prompt instruction and `--prompt-file` diff context into a PR-style terminal review prompt, referencing large files by path instead of inlining them.
 - `bin/pyjenkinsapi-review` now redacts forbidden shell fragments from both prompt text and prompt-file content before invoking `rigor review` (`c0766be`).
+- A top-level `README.md` now mirrors the k3d-manager-style layout with Jenkins quick start, usage, architecture, directory layout, and docs sections.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
@@ -24,6 +25,7 @@
 - Keep `.github/copilot-instructions.md` aligned with the repository's compatibility surface and vendored tooling boundaries.
 - Keep `bin/pyjenkinsapi-review` aligned with the PR-style review output plan in `docs/plans/2026-05-03-review-output-pr-style.md`, especially the file-reference behavior for large diffs.
 - Keep `bin/pyjenkinsapi-review` aligned with the prompt-file redaction plan in `docs/plans/2026-05-03-review-prompt-file-redaction.md`, especially the sanitized temp-file behavior.
+- Keep the new top-level `README.md` aligned with the repo’s actual entrypoints, vendored tooling boundaries, and memory-bank docs.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes
