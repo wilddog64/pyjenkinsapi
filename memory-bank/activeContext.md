@@ -11,7 +11,7 @@
 - Azure repo upload helper now supports `--auto-detect` for detection-first org/project lookup and fails fast if org/project still cannot be inferred.
 - `.github/copilot-instructions.md` has been rewritten to focus on compatibility, repo boundaries, and CI review behavior.
 - `bin/pyjenkinsapi-review` now combines prompt instruction and `--prompt-file` diff context into a PR-style terminal review prompt, referencing large files by path instead of inlining them.
-- Next step: implement prompt-file redaction in `bin/pyjenkinsapi-review` so blocked shell fragments are sanitized before they reach `rigor review`.
+- `bin/pyjenkinsapi-review` now redacts forbidden shell fragments from both prompt text and prompt-file content before invoking `rigor review` (`c0766be`).
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
