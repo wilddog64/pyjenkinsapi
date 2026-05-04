@@ -22,6 +22,7 @@
 - Added Azure CI helper test coverage notes for the repo upload helper's prompt-on-missing behavior.
 - Added explicit `--auto-detect` planning notes for the Azure repo upload helper's detection-first org/project lookup and fail-fast behavior when values cannot be inferred.
 - Rewrote `.github/copilot-instructions.md` to emphasize compatibility, repo boundaries, and CI review behavior.
+- Added a plan for PR-style terminal review output so `bin/pyjenkinsapi-review` can combine prompt instruction and diff context.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
