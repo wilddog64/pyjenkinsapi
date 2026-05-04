@@ -9,6 +9,7 @@
 - Azure CI helper test planning is now queued for the new wrappers, pipeline YAML, and Azure-specific helper scripts.
 - Azure repo upload helper is now implemented to publish `pyjenkinsapi` into Azure DevOps Git from `bin/`.
 - Azure repo upload helper now supports `--auto-detect` for detection-first org/project lookup and fails fast if org/project still cannot be inferred.
+- `.github/copilot-instructions.md` has been rewritten to focus on compatibility, repo boundaries, and CI review behavior.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.
@@ -18,6 +19,7 @@
 - Keep the Azure CI helper test plan aligned with the helper scripts and pipeline wiring.
 - Keep the Azure repo upload helper aligned with the same `bin/` maintenance-command style and confirm the branch upload mode before future changes.
 - Keep the Azure repo upload helper's detection-first behavior aligned with Azure CLI defaults and existing Azure remotes when values are not provided.
+- Keep `.github/copilot-instructions.md` aligned with the repository's compatibility surface and vendored tooling boundaries.
 - Use this file for the next task's immediate context, recent decisions, and next steps.
 
 ## Notes

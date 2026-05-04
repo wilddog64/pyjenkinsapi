@@ -21,6 +21,7 @@
 - Added Azure repo upload helper planning docs and a repo-local upload helper to publish `pyjenkinsapi` into Azure DevOps Git from `bin/`.
 - Added Azure CI helper test coverage notes for the repo upload helper's prompt-on-missing behavior.
 - Added explicit `--auto-detect` planning notes for the Azure repo upload helper's detection-first org/project lookup and fail-fast behavior when values cannot be inferred.
+- Rewrote `.github/copilot-instructions.md` to emphasize compatibility, repo boundaries, and CI review behavior.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
