@@ -14,6 +14,7 @@
 - `bin/pyjenkinsapi-review` now redacts forbidden shell fragments from both prompt text and prompt-file content before invoking `rigor review` (`c0766be`).
 - A top-level `README.md` now mirrors the k3d-manager-style layout with Jenkins quick start, usage, architecture, directory layout, and docs sections.
 - A GitHub Actions CI workflow now lives at `.github/workflows/ci.yml` with a lint job and an optional PR review job on pull requests to `main`.
+- Copilot review comments on PR #1 are being addressed: the Copilot CLI install step is pinned to `v1.0.32`, and the vendored shellcheck workflow now runs `apt-get update` before installing shellcheck.
 
 ## Current Focus
 - Keep `pyjenkinsapi` behavior stable while preserving the legacy-compatible CLI and module layout.

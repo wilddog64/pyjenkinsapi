@@ -28,6 +28,7 @@
 - Implemented prompt-file redaction in `bin/pyjenkinsapi-review` so forbidden shell fragments are sanitized before review and covered by a local BATS smoke suite.
 - Added a top-level `README.md` in a k3d-manager-style layout tailored to pyjenkinsapi’s Jenkins CLI, vendored tooling, and helper scripts.
 - Added `.github/workflows/ci.yml` and split it into lint and optional review jobs for pull requests to `main`.
+- Addressed Copilot PR review feedback by pinning the Copilot CLI install version in the workflow and adding `apt-get update` before shellcheck installation in the vendored workflow.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

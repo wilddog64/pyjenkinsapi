@@ -14,6 +14,7 @@
 - Prompt-file redaction is implemented in `bin/pyjenkinsapi-review` (`c0766be`) so blocked shell fragments are sanitized before invoking `rigor review`.
 - Top-level `README.md` has been added in a k3d-manager-style layout for Jenkins quick start, usage, architecture, directory layout, and docs.
 - GitHub Actions CI workflow split into lint and optional review jobs at `.github/workflows/ci.yml` for pull requests to `main`.
+- Copilot review comments on PR #1 are being resolved with a pinned Copilot CLI version and a vendored shellcheck install that runs `apt-get update` first.
 
 ## Milestones
 - Project overview documented in `memory-bank/project-overview.md`.

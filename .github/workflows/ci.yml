@@ -11,6 +11,9 @@ name: CI
 permissions:
   contents: read
 
+env:
+  COPILOT_CLI_VERSION: v1.0.32
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -113,7 +116,7 @@ jobs:
             https://gh.io/copilot-install \
             -o "${tmp_dir}/copilot-install.sh"
           chmod +x "${tmp_dir}/copilot-install.sh"
-          env VERSION=latest bash "${tmp_dir}/copilot-install.sh"
+          env VERSION="$COPILOT_CLI_VERSION" bash "${tmp_dir}/copilot-install.sh"
           rm -rf "$tmp_dir"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
