@@ -1,17 +1,11 @@
 # Progress
 
 ## Status
-- `pyjenkinsapi` is at the post-merge handoff point after PR #1 landed on `main`.
-- The current working branch is `pyjenkinsapi-v0.1.1`.
-- Vendored `rigor-cli`, GitHub Actions CI, and the review wrapper are all in place.
-- Helper naming cleanup is implemented: repo-local helper scripts now use `ai-*` names, while `rotate-secret` stays unprefixed.
-- `ai-review` stdin input support is implemented so piped review context can be combined with `--prompt` and `--prompt-file`.
-- `ai-review` stdin help text is now fixed and documented in `--help`.
-- `ai-review` backend handoff now keeps its temp handling internal and passes only supported arguments to `rigor review`.
-- Copilot review feedback for the `ai-review` wrapper contract is documented in `docs/bugs/2026-05-04-ai-review-wrapper-contract-regression.md` and resolved in `bf47e67`.
-- CI now has an opt-in failure mode for review findings so `ai-review` can gate pipelines without breaking the default local workflow.
-- The legacy `pyjenkinsapi-review` compatibility shim is restored and covered by tests.
-- Copilot feedback on stale helper references, CI discovery patterns, prompt-file test naming, and review-context sizing is resolved in the current branch.
+- `main` is synced and branch protection is re-enabled.
+- The current working branch is `pyjenkinsapi-v0.1.3`.
+- Vendored `rigor-cli`, repo-local `ai-*` helpers, the legacy `pyjenkinsapi-review` alias, and GitHub Actions CI are stable.
+- Azure helper scripts and plans remain queued for the next milestone.
+- Draft PR #3 now tracks the `pyjenkinsapi-v0.1.3` release branch.
 
 ## Milestones
 - `activeContext.md` and `progress.md` are in use for current-state tracking.
@@ -29,7 +23,8 @@
 - Legacy `pyjenkinsapi-review` compatibility alias bug recorded in `docs/bugs/2026-05-04-pyjenkinsapi-review-compatibility-alias-missing.md`.
 - Legacy `pyjenkinsapi-review` compatibility alias bug resolved with `bin/pyjenkinsapi-review`.
 - CI review-context generation now avoids `--binary` and trims oversized diff payloads before invoking Copilot review.
+- `pyjenkinsapi-v0.1.3` is the current release branch and is tracked by draft PR #3.
 
 ## Next Steps
 - Re-enable branch protection on `main`.
-- Pick up the next scoped task on `pyjenkinsapi-v0.1.1`.
+- Pick up the next scoped task on `pyjenkinsapi-v0.1.3`.
