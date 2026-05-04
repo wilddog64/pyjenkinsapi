@@ -77,7 +77,7 @@ EOF
   [[ "$output" == *"shell(git push --force)"* ]]
 }
 
-@test "ai-review: sanitizes inline prompt-file mode" {
+@test "ai-review: redacts forbidden fragments from prompt-file mode" {
   stub_dir="$(mktemp -d)"
   make_stub_rigor "$stub_dir"
 
@@ -88,7 +88,6 @@ EOF
 
   run env \
     PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
-    PYJENKINSAPI_REVIEW_INLINE_PROMPT_FILE=1 \
     PYJENKINSAPI_REVIEW_STREAM=off \
     "$repo_root/bin/ai-review" \
     --prompt "review these change" \

@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t files < <(
-            find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' | sort
+            find bin -maxdepth 1 -type f \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) | sort
           )
           shellcheck -S error "${files[@]}"
 
@@ -59,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' -print0 |
+          find bin -maxdepth 1 -type f \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) -print0 |
           while IFS= read -r -d '' file; do
             bash -n "$file"
           done
@@ -126,7 +126,12 @@ jobs:
         run: |
           set -euo pipefail
           review_file="$RUNNER_TEMP/ai-review.diff"
-          git diff --binary origin/main...HEAD >"$review_file"
+          git diff --no-ext-diff --no-color origin/main...HEAD >"$review_file"
+          if [[ "$(wc -c <"$review_file")" -gt 524288 ]]; then
+            printf 'WARN: review context exceeds 512 KiB; truncating to keep prompt size manageable\n' >&2
+            head -c 524288 "$review_file" >"${review_file}.trimmed"
+            mv "${review_file}.trimmed" "$review_file"
+          fi
           printf 'PYJENKINSAPI_REVIEW_DIFF=%s\n' "$review_file" >> "$GITHUB_ENV"
 
       - name: Run review wrapper

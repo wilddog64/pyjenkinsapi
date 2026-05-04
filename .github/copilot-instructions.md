@@ -28,20 +28,17 @@ The two public CLI entrypoints must remain stable—changing names, flags, or ou
 
 ### Critical Dependency: `bin/`, `tools/rigor-cli/`, and `.github/copilot-instructions.md`
 
-These three components form a tightly-coupled unit used by Azure CI and local development:
+These components form a tightly-coupled unit used by CI and local development:
 
-**`bin/pyjenkinsapi-lint`** — Runs `tools/rigor-cli/bin/rigor lint` with Python backend (ruff). Hard-coded path at line 36.
+**`bin/ai-bootstrap` / `bin/ai-lint` / `bin/ai-review` / `bin/ai-upload`** — repo-local helper entrypoints used by the validation and automation workflows.
 
-**`bin/pyjenkinsapi-review`** — Runs `tools/rigor-cli/bin/rigor review` with repo-specific guidance. Hard-coded path at lines 31, 115. Reads `.github/copilot-instructions.md` and passes it to the review tool. **Deleting the instructions file will break this script.**
+**`bin/pyjenkinsapi-review`** — legacy compatibility alias that forwards to `bin/ai-review` so older scripts and habits keep working.
 
-**Azure Pipeline** (`azure-pipelines.yml` lines 44–65) — Calls `bin/pyjenkinsapi-lint` and `bin/pyjenkinsapi-review` as CI stages. Requires `.github/copilot-instructions.md` to exist.
+**`tools/rigor-cli/`** — vendored subtree that provides the review/lint backend used by the helper wrappers.
 
-**Do not delete or rename:**
-- `tools/rigor-cli/` — vendored subtree; do not edit directly unless the task is explicitly a subtree refresh
-- `.github/copilot-instructions.md` — required by both `bin/pyjenkinsapi-review` and Azure CI
-- The hard-coded paths in `bin/pyjenkinsapi-lint` and `bin/pyjenkinsapi-review`
+**`.github/copilot-instructions.md`** — repo-specific review guidance consumed by `bin/ai-review` when Copilot is asked to review a change set.
 
-If you need to change or remove any of these, update all three files together and verify the Azure pipeline still works.
+If you need to change or remove any of these, update the wrapper scripts, CI configuration, and docs together and verify the pipeline still works.
 
 ## Repository Boundaries
 - Treat `tools/rigor-cli/` as read-only vendored tooling (see **Critical Dependency** above).

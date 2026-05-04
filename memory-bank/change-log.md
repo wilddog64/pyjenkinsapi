@@ -41,6 +41,7 @@
 - Implemented the `ai-review` CI failure-on-findings mode with a result marker contract and BATS coverage.
 - Added a bug note for the missing `pyjenkinsapi-review` compatibility alias after the helper rename.
 - Restored `bin/pyjenkinsapi-review` as a thin compatibility alias to `bin/ai-review` and covered the legacy path in tests.
+- Updated repo guidance and CI review context handling to match the renamed `ai-*` helpers and avoid oversized AI review prompts.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

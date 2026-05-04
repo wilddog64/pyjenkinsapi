@@ -13,6 +13,7 @@
 - Copilot review feedback for the `ai-review` wrapper contract has been captured in a bug note and resolved in `bf47e67`.
 - `ai-review` now has an opt-in CI failure mode so review findings can return non-zero without changing the default local review flow.
 - `pyjenkinsapi-review` compatibility alias has been restored so older scripts and habits keep working after the `ai-*` rename.
+- Copilot review feedback has been addressed by updating repo guidance, CI discovery patterns, review-context size handling, and the legacy alias contract.
 
 ## Current Focus
 - Keep `main` protected again after the merge flow is complete.
@@ -24,6 +25,7 @@
 - Keep the recorded wrapper-contract review feedback aligned with the current `ai-review` stdin and backend behavior.
 - Keep the CI failure-on-findings behavior aligned with the existing PR-style review output contract and result marker contract.
 - Keep the legacy review entrypoint compatibility alias aligned with `ai-review` behavior and docs.
+- Keep the CI review-context size guard aligned with the current diff generation approach.
 
 ## Notes
 - Update this file after the next significant milestone or direction change.

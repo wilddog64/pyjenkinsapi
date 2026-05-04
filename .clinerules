@@ -37,7 +37,7 @@ When making changes, prefer the smallest validation that proves correctness:
   - CLI command group `jenkins`
   - Entrypoints: `jenkins-cmd` and `serverlist`
 - Treat `tools/rigor-cli/` as a vendored subtree; do not edit it directly unless the task is to refresh that subtree.
-- **Critical:** `bin/pyjenkinsapi-lint`, `bin/pyjenkinsapi-review`, `.github/copilot-instructions.md`, and `tools/rigor-cli/` form a tightly-coupled pipeline unit. Do not delete or rename these files or their hard-coded paths without updating all related scripts and CI configuration simultaneously. Azure pipeline depends on all three (see azure-pipelines.yml lines 44–65).
+- **Critical:** `bin/ai-bootstrap`, `bin/ai-lint`, `bin/ai-review`, `bin/ai-upload`, the legacy `bin/pyjenkinsapi-review` alias, `.github/copilot-instructions.md`, and `tools/rigor-cli/` form a tightly-coupled pipeline unit. Do not delete or rename these files or their call paths without updating all related scripts and CI configuration simultaneously.
 
 ## Preferred Refactor Pattern
 1. Confirm existing behavior from source.
