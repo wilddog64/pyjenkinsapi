@@ -17,6 +17,27 @@ _warn() {
   printf 'WARN: %s\n' "$*" >&2
 }
 
+_redact_forbidden_fragments() {
+  local text="$1"
+  local fragment
+  local -a forbidden=(
+    "shell(git push --force)"
+    "shell(git push)"
+    "shell(cd"
+    "shell(rm"
+    "shell(eval"
+    "shell(sudo"
+    "shell(curl"
+    "shell(wget"
+  )
+
+  for fragment in "${forbidden[@]}"; do
+    text="${text//"$fragment"/[redacted restricted shell fragment]}"
+  done
+
+  printf '%s' "$text"
+}
+
 default_prompt='Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs. Prioritize behavior regressions and compatibility risks over style-only comments.'
 prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
 prompt_file=""
@@ -29,6 +50,13 @@ repo_root="$(_repo_root || true)"
 repo_root="${repo_root:-$(pwd)}"
 cd "$repo_root"
 rigor_bin="${PYJENKINSAPI_RIGOR_BIN:-$repo_root/tools/rigor-cli/bin/rigor}"
+sanitized_prompt_file=""
+cleanup_sanitized_prompt_file() {
+  if [[ -n "$sanitized_prompt_file" && -f "$sanitized_prompt_file" ]]; then
+    rm -f "$sanitized_prompt_file"
+  fi
+}
+trap cleanup_sanitized_prompt_file EXIT INT TERM HUP
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -62,9 +90,13 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+prompt="$(_redact_forbidden_fragments "$prompt")"
+
 if [[ -n "$prompt_file" ]]; then
   [[ -f "$prompt_file" ]] || { printf 'ERROR: prompt file not found: %s\n' "$prompt_file" >&2; exit 1; }
-  prompt_file_contents="$(<"$prompt_file")"
+  prompt_file_contents="$(_redact_forbidden_fragments "$(cat "$prompt_file")")"
+  sanitized_prompt_file="$(mktemp "${TMPDIR:-/tmp}/pyjenkinsapi-review.XXXXXX")"
+  printf '%s' "$prompt_file_contents" >"$sanitized_prompt_file"
 else
   prompt_file_contents=""
 fi
@@ -106,10 +138,15 @@ $prompt_file_contents"
     final_prompt="$final_prompt
 
 Review context file:
-$prompt_file
+$sanitized_prompt_file
 
 Inspect that file for the diff or context to review. Summarize findings in PR style."
   fi
 fi
 
-exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "$@"
+rigor_prompt_args=()
+if [[ -n "$sanitized_prompt_file" ]]; then
+  rigor_prompt_args+=(--prompt-file "$sanitized_prompt_file")
+fi
+
+exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "${rigor_prompt_args[@]}" "$@"
