@@ -1,4 +1,4 @@
-# Plan: GitHub PR-style review output for `pyjenkinsapi-review`
+# Plan: GitHub PR-style review output for `ai-review`
 
 **Date:** 2026-05-03  
 **Branch:** `pyjenkinsapi-v0.1.0`  
@@ -9,7 +9,7 @@
 
 ## Goal
 
-Make `bin/pyjenkinsapi-review` produce review output that is easier to read like a GitHub PR review:
+Make `bin/ai-review` produce review output that is easier to read like a GitHub PR review:
 
 - combine the user prompt with `--prompt-file` context by referencing the file path instead of replacing one with the other
 - ask Copilot for a structured review response with a short summary and findings
@@ -68,7 +68,7 @@ This is a wrapper UX change, not a change to the vendored `rigor-cli` subtree.
 
 This plan does not modify them yet, but implementation will likely touch:
 
-- `bin/pyjenkinsapi-review`
+- `bin/ai-review`
 - `.github/copilot-instructions.md` if the prompt contract needs reinforcement
 - `memory-bank/activeContext.md`
 - `memory-bank/progress.md`
@@ -78,7 +78,7 @@ This plan does not modify them yet, but implementation will likely touch:
 
 ## Definition of Done for the Future Implementation
 
-- `bin/pyjenkinsapi-review` combines `--prompt` and `--prompt-file` into one final prompt instead of replacing one with the other.
+- `bin/ai-review` combines `--prompt` and `--prompt-file` into one final prompt instead of replacing one with the other.
 - The final prompt requests a PR-style review response with a short summary and explicit findings.
 - Local review runs produce visible, structured output that is easier to read than an empty success code.
 - Large `--prompt-file` inputs are referenced by path to keep the prompt size manageable.

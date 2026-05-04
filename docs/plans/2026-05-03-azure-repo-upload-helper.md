@@ -43,7 +43,7 @@ The helper should make initial repo publication and later re-syncs repeatable fr
 ## Proposed Shape
 
 ### Script
-- Add a repo-local script with a clear name such as `bin/pyjenkinsapi-azure-upload`.
+- Add a repo-local script with a clear name such as `bin/ai-upload`.
 - Support:
   - organization URL or name
   - project

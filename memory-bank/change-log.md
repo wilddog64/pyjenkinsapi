@@ -30,6 +30,7 @@
 - Added `.github/workflows/ci.yml` and split it into lint and optional review jobs for pull requests to `main`.
 - Addressed Copilot PR review feedback by pinning the Copilot CLI install version in the workflow and adding `apt-get update` before shellcheck installation in the vendored workflow.
 - Added a naming plan to simplify repo-local helpers from `pyjenkinsapi-*` to `ai-*`, keeping `rotate-secret` unprefixed.
+- Renamed repo-local helper entrypoints to `ai-bootstrap`, `ai-lint`, `ai-review`, and `ai-upload`, and updated docs/workflows/tests to match.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

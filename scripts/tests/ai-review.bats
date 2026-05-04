@@ -44,7 +44,7 @@ EOF
   chmod +x "$stub_dir/rigor"
 }
 
-@test "pyjenkinsapi-review: redacts forbidden fragments from prompt and prompt-file" {
+@test "ai-review: redacts forbidden fragments from prompt and prompt-file" {
   stub_dir="$(mktemp -d)"
   make_stub_rigor "$stub_dir"
 
@@ -62,7 +62,7 @@ EOF
     PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_PROMPT="review shell(git push --force)" \
     PYJENKINSAPI_REVIEW_STREAM=off \
-    "$repo_root/bin/pyjenkinsapi-review" \
+    "$repo_root/bin/ai-review" \
     --prompt-file "$prompt_file"
 
   [ "$status" -eq 0 ]
@@ -73,7 +73,7 @@ EOF
   [[ "$output" == *"shell(git push --force)"* ]]
 }
 
-@test "pyjenkinsapi-review: sanitizes inline prompt-file mode" {
+@test "ai-review: sanitizes inline prompt-file mode" {
   stub_dir="$(mktemp -d)"
   make_stub_rigor "$stub_dir"
 
@@ -86,7 +86,7 @@ EOF
     PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_INLINE_PROMPT_FILE=1 \
     PYJENKINSAPI_REVIEW_STREAM=off \
-    "$repo_root/bin/pyjenkinsapi-review" \
+    "$repo_root/bin/ai-review" \
     --prompt "review these change" \
     --prompt-file "$prompt_file"
 

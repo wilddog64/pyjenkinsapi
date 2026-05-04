@@ -40,9 +40,9 @@ serverlist
 ### 4. Verify local tooling
 
 ```bash
-bash -n bin/pyjenkinsapi-review
-shellcheck -S warning bin/pyjenkinsapi-review
-bats scripts/tests/pyjenkinsapi-review.bats
+bash -n bin/ai-review
+shellcheck -S warning bin/ai-review
+bats scripts/tests/ai-review.bats
 ```
 
 ---
@@ -149,5 +149,5 @@ setup.py               # package metadata and console scripts
 
 - GitHub Actions CI lives in `.github/workflows/ci.yml` and runs a lint job plus an optional PR review job on pull requests to `main`.
 - `tools/rigor-cli/` is vendored and should be treated as read-only unless a task explicitly refreshes the subtree.
-- `bin/pyjenkinsapi-review` is intentionally PR-style and local-first; it does not mutate the review prompt file on disk.
+- `bin/ai-review` is intentionally PR-style and local-first; it does not mutate the review prompt file on disk.
 - If you change the CLI surface, update the memory bank and the relevant plan docs together.

@@ -6,7 +6,7 @@ repo_root="$(git -C "$script_dir/.." rev-parse --show-toplevel 2>/dev/null || tr
 
 _usage() {
   cat <<'EOF'
-Usage: pyjenkinsapi-azure-upload [options]
+Usage: ai-upload [options]
 
 Upload the local pyjenkinsapi repository to Azure DevOps and keep a git remote
 in sync.

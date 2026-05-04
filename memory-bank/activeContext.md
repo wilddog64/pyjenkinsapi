@@ -6,7 +6,7 @@
 - `rigor-cli` remains vendored under `tools/rigor-cli/` and is treated as read-only tooling.
 - GitHub Actions CI and the review wrapper are now part of the shipped repo state.
 - Azure helper scripts, plans, and review/docs work remain available for future follow-up.
-- Helper naming cleanup is now queued: move repo-local `bin/pyjenkinsapi-*` scripts to `ai-*` names and keep `rotate-secret` unprefixed.
+- Helper naming cleanup is now implemented: repo-local helper scripts use `ai-*` names, and `rotate-secret` remains unprefixed.
 
 ## Current Focus
 - Keep `main` protected again after the merge flow is complete.

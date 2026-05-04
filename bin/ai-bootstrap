@@ -7,7 +7,7 @@ _repo_root() {
 
 _usage() {
   cat <<'EOF'
-Usage: pyjenkinsapi-bootstrap [--backend-cmd CMD] [--install]
+Usage: ai-bootstrap [--backend-cmd CMD] [--install]
 
 Prepare the local lint backend for pyjenkinsapi.
 

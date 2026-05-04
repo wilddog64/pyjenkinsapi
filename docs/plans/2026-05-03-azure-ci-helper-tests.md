@@ -24,21 +24,21 @@ The tests should stay lightweight and avoid real Azure DevOps or Copilot side ef
 ## What to Test
 
 ### Repo-local wrappers
-- `bin/pyjenkinsapi-bootstrap`
+- `bin/ai-bootstrap`
   - help/usage output
   - missing backend handling
   - `--install` path with a stubbed installer
-- `bin/pyjenkinsapi-lint`
+- `bin/ai-lint`
   - default backend mapping
   - environment-variable overrides
   - argument pass-through to `rigor lint`
-- `bin/pyjenkinsapi-review`
+- `bin/ai-review`
   - default prompt selection
   - `--prompt`
   - `--prompt-file`
   - `--model`
   - warning path for missing `.github/copilot-instructions.md`
-- `bin/pyjenkinsapi-azure-upload`
+- `bin/ai-upload`
   - option parsing and environment-variable fallback
   - interactive prompt for missing org/project
   - repo create-or-reuse behavior
@@ -104,12 +104,12 @@ This plan does not modify them yet, but implementation will likely touch:
 
 - `scripts/tests/` or a new BATS suite for Azure helpers
 - `azure-pipelines.yml`
-- `bin/pyjenkinsapi-bootstrap`
-- `bin/pyjenkinsapi-lint`
-- `bin/pyjenkinsapi-review`
+- `bin/ai-bootstrap`
+- `bin/ai-lint`
+- `bin/ai-review`
 - `bin/pyjenkinsapi-azure-policy` or the future branch-policy helper script
 - `bin/pyjenkinsapi-azure-secret-rotate` or the future secret rotation helper script
-- `bin/pyjenkinsapi-azure-upload`
+- `bin/ai-upload`
 - `memory-bank/activeContext.md`
 - `memory-bank/progress.md`
 
