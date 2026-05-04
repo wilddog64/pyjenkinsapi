@@ -31,6 +31,8 @@
 - Addressed Copilot PR review feedback by pinning the Copilot CLI install version in the workflow and adding `apt-get update` before shellcheck installation in the vendored workflow.
 - Added a naming plan to simplify repo-local helpers from `pyjenkinsapi-*` to `ai-*`, keeping `rotate-secret` unprefixed.
 - Renamed repo-local helper entrypoints to `ai-bootstrap`, `ai-lint`, `ai-review`, and `ai-upload`, and updated docs/workflows/tests to match.
+- Added a plan to let `ai-review` accept piped stdin as review context alongside `--prompt` and `--prompt-file`.
+- Implemented stdin review-context support in `ai-review` and added BATS coverage plus direct smoke validation.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

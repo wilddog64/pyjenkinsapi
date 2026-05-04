@@ -9,7 +9,7 @@ _usage() {
   cat <<'EOF'
 Usage: ai-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [rigor review args...]
 
-Run rigor review with a repo-local default prompt and Copilot instructions.
+Run rigor review with a repo-local default prompt, stdin support, and Copilot instructions.
 EOF
 }
 
@@ -44,6 +44,8 @@ prompt_file=""
 model="${PYJENKINSAPI_REVIEW_MODEL:-}"
 stream_mode="${PYJENKINSAPI_REVIEW_STREAM:-on}"
 inline_prompt_file="${PYJENKINSAPI_REVIEW_INLINE_PROMPT_FILE:-0}"
+stdin_contents=""
+stdin_has_data=0
 
 repo_root="$(_repo_root || true)"
 [[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
@@ -92,13 +94,35 @@ done
 
 prompt="$(_redact_forbidden_fragments "$prompt")"
 
+if [[ ! -t 0 ]]; then
+  stdin_contents="$(cat)"
+  if [[ -n "$stdin_contents" ]]; then
+    stdin_has_data=1
+    stdin_contents="$(_redact_forbidden_fragments "$stdin_contents")"
+  fi
+fi
+
 if [[ -n "$prompt_file" ]]; then
   [[ -f "$prompt_file" ]] || { printf 'ERROR: prompt file not found: %s\n' "$prompt_file" >&2; exit 1; }
   prompt_file_contents="$(_redact_forbidden_fragments "$(cat "$prompt_file")")"
-  sanitized_prompt_file="$(mktemp "${TMPDIR:-/tmp}/ai-review.XXXXXX")"
-  printf '%s' "$prompt_file_contents" >"$sanitized_prompt_file"
 else
   prompt_file_contents=""
+fi
+
+if [[ -n "$prompt_file_contents" || "$stdin_has_data" -eq 1 ]]; then
+  sanitized_prompt_file="$(mktemp "${TMPDIR:-/tmp}/ai-review.XXXXXX")"
+  if [[ -n "$prompt_file_contents" && "$stdin_has_data" -eq 1 ]]; then
+    {
+      printf -- '--- %s ---\n' "--prompt-file (${prompt_file})"
+      printf '%s\n\n' "$prompt_file_contents"
+      printf -- '--- stdin ---\n'
+      printf '%s' "$stdin_contents"
+    } >"$sanitized_prompt_file"
+  elif [[ -n "$prompt_file_contents" ]]; then
+    printf '%s' "$prompt_file_contents" >"$sanitized_prompt_file"
+  else
+    printf '%s' "$stdin_contents" >"$sanitized_prompt_file"
+  fi
 fi
 
 review_args=()
@@ -128,19 +152,51 @@ final_prompt="$review_style_prompt
 Review instruction:
 $prompt"
 
-if [[ -n "$prompt_file_contents" ]]; then
+if [[ -n "$prompt_file_contents" || "$stdin_has_data" -eq 1 ]]; then
   if [[ "$inline_prompt_file" -eq 1 ]]; then
-    final_prompt="$final_prompt
+    if [[ -n "$prompt_file_contents" && "$stdin_has_data" -eq 1 ]]; then
+      final_prompt="$final_prompt
+
+Review context from --prompt-file (${prompt_file}) and stdin:
+--- prompt-file (${prompt_file}) ---
+$prompt_file_contents
+
+--- stdin ---
+$stdin_contents"
+    elif [[ -n "$prompt_file_contents" ]]; then
+      final_prompt="$final_prompt
 
 Review context from --prompt-file (${prompt_file}):
 $prompt_file_contents"
+    else
+      final_prompt="$final_prompt
+
+Review context from stdin:
+$stdin_contents"
+    fi
   else
-    final_prompt="$final_prompt
+    if [[ -n "$prompt_file_contents" && "$stdin_has_data" -eq 1 ]]; then
+      final_prompt="$final_prompt
+
+Review context file:
+$sanitized_prompt_file
+
+Inspect that file for the diff or context to review. It contains both the prompt-file and stdin content. Summarize findings in PR style."
+    elif [[ -n "$prompt_file_contents" ]]; then
+      final_prompt="$final_prompt
 
 Review context file:
 $sanitized_prompt_file
 
 Inspect that file for the diff or context to review. Summarize findings in PR style."
+    else
+      final_prompt="$final_prompt
+
+Review context file:
+$sanitized_prompt_file
+
+Inspect that file for the diff or context to review. Summarize findings in PR style."
+    fi
   fi
 fi
 

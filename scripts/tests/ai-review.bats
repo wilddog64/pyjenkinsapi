@@ -94,3 +94,65 @@ EOF
   [[ "$output" == *"[redacted restricted shell fragment]"* ]]
   [[ "$output" != *"shell(git push --force)"* ]]
 }
+
+@test "ai-review: accepts stdin review context" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  stdin_file="$(mktemp)"
+  cat >"$stdin_file" <<'EOF'
+diff --git a/example.py b/example.py
+--- a/example.py
++++ b/example.py
+@@ -1,2 +1,2 @@
+-shell(git push --force)
++shell(git push --force)
+EOF
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    AI_REVIEW_BIN="$repo_root/bin/ai-review" \
+    bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change"' _ "$stdin_file"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"PROMPT_FILE<<EOF"* ]]
+  [[ "$output" == *"[redacted restricted shell fragment]"* ]]
+  [[ "$output" != *"shell(git push --force)"* ]]
+}
+
+@test "ai-review: combines stdin and prompt-file context" {
+  stub_dir="$(mktemp -d)"
+  make_stub_rigor "$stub_dir"
+
+  prompt_file="$(mktemp)"
+  cat >"$prompt_file" <<'EOF'
+diff --git a/prompt-file.py b/prompt-file.py
+--- a/prompt-file.py
++++ b/prompt-file.py
+@@ -1 +1 @@
+-prompt-file content
++prompt-file content
+EOF
+
+  stdin_file="$(mktemp)"
+  cat >"$stdin_file" <<'EOF'
+diff --git a/stdin.py b/stdin.py
+--- a/stdin.py
++++ b/stdin.py
+@@ -1 +1 @@
+-stdin content
++stdin content
+EOF
+
+  run env \
+    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    PYJENKINSAPI_REVIEW_STREAM=off \
+    AI_REVIEW_BIN="$repo_root/bin/ai-review" \
+    bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change" --prompt-file "$2"' _ "$stdin_file" "$prompt_file"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"prompt-file content"* ]]
+  [[ "$output" == *"stdin content"* ]]
+  [[ "$output" == *"contains both the prompt-file and stdin content"* ]]
+}
