@@ -129,7 +129,11 @@ jobs:
           git diff --no-ext-diff --no-color origin/main...HEAD >"$review_file"
           if [[ "$(wc -c <"$review_file")" -gt 524288 ]]; then
             printf 'WARN: review context exceeds 512 KiB; truncating to keep prompt size manageable\n' >&2
-            head -c 524288 "$review_file" >"${review_file}.trimmed"
+            echo "::warning file=.github/workflows/ci.yml::Review context exceeds 512 KiB; the diff was truncated and the automated review will be incomplete — findings in later files may be missed."
+            truncation_marker=$'\n[TRUNCATED: diff exceeded 512 KiB -- review context is incomplete; later files were omitted]\n'
+            marker_len=$(printf '%s' "$truncation_marker" | wc -c)
+            head -c $((524288 - marker_len)) "$review_file" >"${review_file}.trimmed"
+            printf '%s' "$truncation_marker" >>"${review_file}.trimmed"
             mv "${review_file}.trimmed" "$review_file"
           fi
           printf 'PYJENKINSAPI_REVIEW_DIFF=%s\n' "$review_file" >> "$GITHUB_ENV"
