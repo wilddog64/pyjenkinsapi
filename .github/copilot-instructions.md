@@ -1,23 +1,51 @@
 # Copilot Instructions for `pyjenkinsapi`
 
 ## Role
-- Review this repository as a compatibility-sensitive Jenkins client and CLI project.
-- Prefer repo-specific, actionable review comments over generic style notes.
-- Use the prompt for the current change set as the primary source of review context.
+- Treat this as a compatibility-sensitive Jenkins client and CLI project.
+- Prefer repo-specific, actionable guidance over generic style notes.
+- When making code changes, think of this as a code + tooling + CI system; changes can cascade across build/review/pipeline.
+- When reviewing, use the prompt for the current change set as the primary source of review context.
+
+## CLI Entrypoints (Stable)
+The two public CLI entrypoints must remain stable—changing names, flags, or output format is a breaking change:
+- `jenkins-cmd` — primary Jenkins view/job inspector (see `jenkinsapi.scripts.jenkins_cli:jenkins`)
+- `serverlist` — legacy server list helper (see `jenkinsapi.scripts.serverlist:main`)
+
+## Code Change Priorities
+- Preserve backward compatibility, especially `jenkinsapi.core.Jenkins` and existing import paths.
+- Treat config-driven Jenkins auth (via `jenkins.ini`) as the default pattern—never hardcode credentials, tokens, org/project names, or Jenkins URLs.
+- Use `jenkinsapi.config.core.config_section_map()` to parse config sections; example: `config = config_section_map('lcjenkins')` yields `{'url': '...', 'user': '...', 'password': '...'}`
+- Favor minimal, surgical edits over broad rewrites.
+- Do not log or print plaintext secrets.
+- Preserve legacy Python patterns (e.g., `from __future__ import print_function`) unless explicitly requested.
 
 ## Review Priorities
-- Preserve backward compatibility, especially `jenkinsapi.core.Jenkins` and existing import paths.
-- Keep CLI entrypoints, command names, and flag meanings stable unless the task explicitly changes them.
-- Favor minimal, surgical edits over broad rewrites.
-- Treat config-driven Jenkins auth as the default pattern.
-- Never hardcode credentials, tokens, org/project names, or Jenkins URLs.
+- Preserve backward compatibility and CLI stability as noted above.
 - Review behavior changes before style-only suggestions.
 - Call out missing tests or docs when behavior changes.
 
+## Build and Validation Pipeline
+
+### Critical Dependency: `bin/`, `tools/rigor-cli/`, and `.github/copilot-instructions.md`
+
+These three components form a tightly-coupled unit used by Azure CI and local development:
+
+**`bin/pyjenkinsapi-lint`** — Runs `tools/rigor-cli/bin/rigor lint` with Python backend (ruff). Hard-coded path at line 36.
+
+**`bin/pyjenkinsapi-review`** — Runs `tools/rigor-cli/bin/rigor review` with repo-specific guidance. Hard-coded path at lines 31, 115. Reads `.github/copilot-instructions.md` and passes it to the review tool. **Deleting the instructions file will break this script.**
+
+**Azure Pipeline** (`azure-pipelines.yml` lines 44–65) — Calls `bin/pyjenkinsapi-lint` and `bin/pyjenkinsapi-review` as CI stages. Requires `.github/copilot-instructions.md` to exist.
+
+**Do not delete or rename:**
+- `tools/rigor-cli/` — vendored subtree; do not edit directly unless the task is explicitly a subtree refresh
+- `.github/copilot-instructions.md` — required by both `bin/pyjenkinsapi-review` and Azure CI
+- The hard-coded paths in `bin/pyjenkinsapi-lint` and `bin/pyjenkinsapi-review`
+
+If you need to change or remove any of these, update all three files together and verify the Azure pipeline still works.
+
 ## Repository Boundaries
-- Treat `tools/rigor-cli/` as vendored tooling.
-- Do not suggest editing `tools/rigor-cli/` unless the task is explicitly a subtree refresh.
-- Treat files under `bin/` as repo-local maintenance and pipeline helpers unless the task says otherwise.
+- Treat `tools/rigor-cli/` as read-only vendored tooling (see **Critical Dependency** above).
+- Treat files under `bin/` as repo-local maintenance and pipeline helpers integral to CI (see **Critical Dependency** above).
 - Keep Azure helper scripts aligned with their documented prompt/fail-fast behavior.
 
 ## What to Flag
