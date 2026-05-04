@@ -37,6 +37,7 @@
 - Added a bug doc for the backend `--prompt-file` leak so `ai-review` can keep its internal temp file private and only pass supported flags to `rigor review`.
 - Fixed `ai-review` help text and backend handoff so piped stdin is documented and the wrapper no longer forwards unsupported backend flags.
 - Recorded Copilot review feedback for the `ai-review` wrapper contract in a bug note and tied it to the existing `bf47e67` fix.
+- Added a plan for opt-in CI failure-on-findings behavior in `ai-review` so pipelines can gate on review findings without changing the default local exit status.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
