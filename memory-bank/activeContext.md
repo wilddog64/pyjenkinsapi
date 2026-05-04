@@ -12,6 +12,7 @@
 - `ai-review` backend handoff is now fixed so the wrapper keeps its temp handling internal and passes only supported arguments to the vendored backend.
 - Copilot review feedback for the `ai-review` wrapper contract has been captured in a bug note and resolved in `bf47e67`.
 - `ai-review` now has an opt-in CI failure mode so review findings can return non-zero without changing the default local review flow.
+- `pyjenkinsapi-review` still needs a thin compatibility alias so older scripts and habits do not break after the `ai-*` rename.
 
 ## Current Focus
 - Keep `main` protected again after the merge flow is complete.
@@ -22,6 +23,7 @@
 - Keep the stdin-help and backend handoff fixes aligned with the wrapper help text, README guidance, and vendored `rigor review` CLI contract.
 - Keep the recorded wrapper-contract review feedback aligned with the current `ai-review` stdin and backend behavior.
 - Keep the CI failure-on-findings behavior aligned with the existing PR-style review output contract and result marker contract.
+- Keep the legacy review entrypoint compatibility alias aligned with `ai-review` behavior and docs.
 
 ## Notes
 - Update this file after the next significant milestone or direction change.
