@@ -63,7 +63,7 @@ diff --git a/example.sh b/example.sh
 EOF
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_PROMPT="review shell(git push --force)" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     "$repo_root/bin/ai-review" \
@@ -87,7 +87,7 @@ shell(git push --force)
 EOF
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     "$repo_root/bin/ai-review" \
     --prompt "review these change" \
@@ -113,7 +113,7 @@ diff --git a/example.py b/example.py
 EOF
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     AI_REVIEW_BIN="$repo_root/bin/ai-review" \
     bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change"' _ "$stdin_file"
@@ -150,7 +150,7 @@ diff --git a/stdin.py b/stdin.py
 EOF
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     AI_REVIEW_BIN="$repo_root/bin/ai-review" \
     bash -c 'cat "$1" | "$AI_REVIEW_BIN" --prompt "review these change" --prompt-file "$2"' _ "$stdin_file" "$prompt_file"
@@ -168,7 +168,7 @@ EOF
   make_stub_rigor "$stub_dir"
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     RIGOR_STUB_OUTPUT=$'Summary\n\nFindings\n- one issue\n\nAI_REVIEW_RESULT: findings' \
     "$repo_root/bin/ai-review" \
@@ -185,7 +185,7 @@ EOF
   make_stub_rigor "$stub_dir"
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_FAIL_ON_FINDINGS=1 \
     PYJENKINSAPI_REVIEW_STREAM=off \
     RIGOR_STUB_OUTPUT=$'Summary\n\nNo findings\n\nAI_REVIEW_RESULT: no-findings' \
@@ -212,7 +212,7 @@ diff --git a/legacy.py b/legacy.py
 EOF
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     bash -c 'cd "$1" && cat "$2" | ./bin/pyjenkinsapi-review --prompt "review these change"' _ "$repo_root" "$stdin_file"
 
@@ -226,7 +226,7 @@ EOF
   make_stub_rigor "$stub_dir"
 
   run env \
-    PYJENKINSAPI_RIGOR_BIN="$stub_dir/rigor" \
+    AI_RIGOR_BIN="$stub_dir/rigor" \
     PYJENKINSAPI_REVIEW_STREAM=off \
     RIGOR_STUB_OUTPUT=$'Summary\n\nFindings\n- one issue\n\nAI_REVIEW_RESULT: findings' \
     bash -c 'cd "$1" && ./bin/pyjenkinsapi-review --exit-code --prompt "review these change"' _ "$repo_root"

@@ -23,6 +23,7 @@
 - Legacy `pyjenkinsapi-review` compatibility alias bug recorded in `docs/bugs/2026-05-04-pyjenkinsapi-review-compatibility-alias-missing.md`.
 - Legacy `pyjenkinsapi-review` compatibility alias bug resolved with `bin/pyjenkinsapi-review`.
 - CI review-context generation now avoids `--binary` and trims oversized diff payloads before invoking Copilot review.
+- CI BATS failure on `ai-review` was traced to a stale `PYJENKINSAPI_RIGOR_BIN` test override; the harness now needs to use `AI_RIGOR_BIN`.
 - `pyjenkinsapi-v0.1.3` is the current release branch and is tracked by draft PR #3.
 
 ## Next Steps

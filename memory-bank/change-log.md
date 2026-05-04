@@ -42,6 +42,7 @@
 - Added a bug note for the missing `pyjenkinsapi-review` compatibility alias after the helper rename.
 - Restored `bin/pyjenkinsapi-review` as a thin compatibility alias to `bin/ai-review` and covered the legacy path in tests.
 - Updated repo guidance and CI review context handling to match the renamed `ai-*` helpers and avoid oversized AI review prompts.
+- Recorded the `ai-review` CI regression caused by the stale `PYJENKINSAPI_RIGOR_BIN` test override and corrected the BATS harness to use `AI_RIGOR_BIN`.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.
