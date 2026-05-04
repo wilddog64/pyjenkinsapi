@@ -27,6 +27,7 @@
 - Added a plan to redact forbidden shell fragments from `bin/pyjenkinsapi-review` prompt-file input before invoking `rigor review`.
 - Implemented prompt-file redaction in `bin/pyjenkinsapi-review` so forbidden shell fragments are sanitized before review and covered by a local BATS smoke suite.
 - Added a top-level `README.md` in a k3d-manager-style layout tailored to pyjenkinsapi’s Jenkins CLI, vendored tooling, and helper scripts.
+- Added `.github/workflows/ci.yml` to run shellcheck, bash syntax checks, Python compile checks, and the local BATS smoke test on pull requests to `main`.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

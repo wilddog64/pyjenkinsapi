@@ -1,0 +1,74 @@
+---
+name: CI
+
+"on":
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install system dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bats shellcheck
+
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -e .
+
+      - name: Run shellcheck
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(
+            find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' | sort
+          )
+          shellcheck -S error "${files[@]}"
+
+      - name: Run bash syntax checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' -print0 |
+          while IFS= read -r -d '' file; do
+            bash -n "$file"
+          done
+
+      - name: Run Python compile checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall jenkinsapi
+
+      - name: Run BATS
+        shell: bash
+        run: |
+          set -euo pipefail
+          bats scripts/tests/pyjenkinsapi-review.bats
