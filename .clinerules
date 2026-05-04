@@ -35,6 +35,7 @@ When making changes, prefer the smallest validation that proves correctness:
 - Keep existing public interfaces stable:
   - `jenkinsapi.core.Jenkins`
   - CLI command group `jenkins`
+- Treat `tools/rigor-cli/` as a vendored subtree; do not edit it directly unless the task is to refresh that subtree.
 
 ## Preferred Refactor Pattern
 1. Confirm existing behavior from source.
@@ -45,4 +46,5 @@ When making changes, prefer the smallest validation that proves correctness:
 
 ## Documentation Expectations
 - Update `memory-bank/` notes when architectural assumptions change.
+- Keep `memory-bank/activeContext.md` current during work and `memory-bank/progress.md` current at milestones.
 - For non-trivial changes, add a short “why” explanation near complex logic.

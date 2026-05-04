@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+_repo_root() {
+  git rev-parse --show-toplevel 2>/dev/null
+}
+
+_usage() {
+  cat <<'EOF'
+Usage: pyjenkinsapi-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [rigor review args...]
+
+Run rigor review with a repo-local default prompt and Copilot instructions.
+EOF
+}
+
+_warn() {
+  printf 'WARN: %s\n' "$*" >&2
+}
+
+_redact_forbidden_fragments() {
+  local text="$1"
+  local fragment
+  local -a forbidden=(
+    "shell(git push --force)"
+    "shell(git push)"
+    "shell(cd"
+    "shell(rm"
+    "shell(eval"
+    "shell(sudo"
+    "shell(curl"
+    "shell(wget"
+  )
+
+  for fragment in "${forbidden[@]}"; do
+    text="${text//"$fragment"/[redacted restricted shell fragment]}"
+  done
+
+  printf '%s' "$text"
+}
+
+default_prompt='Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs. Prioritize behavior regressions and compatibility risks over style-only comments.'
+prompt="${PYJENKINSAPI_REVIEW_PROMPT:-$default_prompt}"
+prompt_file=""
+model="${PYJENKINSAPI_REVIEW_MODEL:-}"
+stream_mode="${PYJENKINSAPI_REVIEW_STREAM:-on}"
+inline_prompt_file="${PYJENKINSAPI_REVIEW_INLINE_PROMPT_FILE:-0}"
+
+repo_root="$(_repo_root || true)"
+[[ -n "$repo_root" ]] || _warn "Not inside a git repository; using current directory"
+repo_root="${repo_root:-$(pwd)}"
+cd "$repo_root"
+rigor_bin="${PYJENKINSAPI_RIGOR_BIN:-$repo_root/tools/rigor-cli/bin/rigor}"
+sanitized_prompt_file=""
+cleanup_sanitized_prompt_file() {
+  if [[ -n "$sanitized_prompt_file" && -f "$sanitized_prompt_file" ]]; then
+    rm -f "$sanitized_prompt_file"
+  fi
+}
+trap cleanup_sanitized_prompt_file EXIT INT TERM HUP
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --prompt)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --prompt requires a value\n' >&2; exit 1; }
+      prompt="$1"
+      ;;
+    --prompt-file)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --prompt-file requires a value\n' >&2; exit 1; }
+      prompt_file="$1"
+      ;;
+    --model)
+      shift
+      [[ $# -gt 0 ]] || { printf 'ERROR: --model requires a value\n' >&2; exit 1; }
+      model="$1"
+      ;;
+    -h|--help)
+      _usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+
+prompt="$(_redact_forbidden_fragments "$prompt")"
+
+if [[ -n "$prompt_file" ]]; then
+  [[ -f "$prompt_file" ]] || { printf 'ERROR: prompt file not found: %s\n' "$prompt_file" >&2; exit 1; }
+  prompt_file_contents="$(_redact_forbidden_fragments "$(cat "$prompt_file")")"
+  sanitized_prompt_file="$(mktemp "${TMPDIR:-/tmp}/pyjenkinsapi-review.XXXXXX")"
+  printf '%s' "$prompt_file_contents" >"$sanitized_prompt_file"
+else
+  prompt_file_contents=""
+fi
+
+review_args=()
+if [[ -n "$model" ]]; then
+  review_args+=(--model "$model")
+fi
+
+has_stream=0
+for arg in "$@"; do
+  if [[ "$arg" == "--stream" ]]; then
+    has_stream=1
+    break
+  fi
+done
+if [[ "$has_stream" -eq 0 ]]; then
+  review_args+=(--stream "$stream_mode")
+fi
+
+if [[ ! -f .github/copilot-instructions.md ]]; then
+  _warn "Missing .github/copilot-instructions.md; review will fall back to Copilot defaults"
+fi
+
+review_style_prompt='Respond in GitHub PR review style. Start with a short Summary, then Findings, then Notes or Suggestions. Keep comments concise and actionable. When possible, mention file paths and line numbers. If there are no findings, say that explicitly.'
+
+final_prompt="$review_style_prompt
+
+Review instruction:
+$prompt"
+
+if [[ -n "$prompt_file_contents" ]]; then
+  if [[ "$inline_prompt_file" -eq 1 ]]; then
+    final_prompt="$final_prompt
+
+Review context from --prompt-file (${prompt_file}):
+$prompt_file_contents"
+  else
+    final_prompt="$final_prompt
+
+Review context file:
+$sanitized_prompt_file
+
+Inspect that file for the diff or context to review. Summarize findings in PR style."
+  fi
+fi
+
+rigor_prompt_args=()
+if [[ -n "$sanitized_prompt_file" ]]; then
+  rigor_prompt_args+=(--prompt-file "$sanitized_prompt_file")
+fi
+
+exec "$rigor_bin" review --prompt "$final_prompt" "${review_args[@]}" "${rigor_prompt_args[@]}" "$@"

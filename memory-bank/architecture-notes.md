@@ -20,6 +20,9 @@
 ### `jenkinsapi/scripts/serverlist.py`
 - Secondary CLI entrypoint (`serverlist`) for server list workflows.
 
+### `tools/rigor-cli/`
+- Vendored read-only subtree for the `rigor-cli` toolchain used to review and lint changes in this repo.
+
 ## Data / Control Flow (CLI Path)
 1. User invokes `jenkins-cmd ...`.
 2. Click group function resolves config values via `config_section_map(...)`.

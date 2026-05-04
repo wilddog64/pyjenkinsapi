@@ -23,6 +23,9 @@
 - `jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins`
 - `serverlist=jenkinsapi.scripts.serverlist:main`
 
+## Vendored Tooling
+- `tools/rigor-cli/` contains a vendored subtree of the `rigor-cli` repo for local review and lint workflows.
+
 ## Important Backward-Compatibility Surface
 - Public class: `jenkinsapi.core.Jenkins`
 - CLI command group: `jenkins` in `jenkinsapi.scripts.jenkins_cli`
