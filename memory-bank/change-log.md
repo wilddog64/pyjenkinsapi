@@ -29,6 +29,19 @@
 - Added a top-level `README.md` in a k3d-manager-style layout tailored to pyjenkinsapi’s Jenkins CLI, vendored tooling, and helper scripts.
 - Added `.github/workflows/ci.yml` and split it into lint and optional review jobs for pull requests to `main`.
 - Addressed Copilot PR review feedback by pinning the Copilot CLI install version in the workflow and adding `apt-get update` before shellcheck installation in the vendored workflow.
+- Added a naming plan to simplify repo-local helpers from `pyjenkinsapi-*` to `ai-*`, keeping `rotate-secret` unprefixed.
+- Renamed repo-local helper entrypoints to `ai-bootstrap`, `ai-lint`, `ai-review`, and `ai-upload`, and updated docs/workflows/tests to match.
+- Added a plan to let `ai-review` accept piped stdin as review context alongside `--prompt` and `--prompt-file`.
+- Implemented stdin review-context support in `ai-review` and added BATS coverage plus direct smoke validation.
+- Added a bug doc for the missing stdin help text in `ai-review` so the wrapper’s piped-input behavior is discoverable.
+- Added a bug doc for the backend `--prompt-file` leak so `ai-review` can keep its internal temp file private and only pass supported flags to `rigor review`.
+- Fixed `ai-review` help text and backend handoff so piped stdin is documented and the wrapper no longer forwards unsupported backend flags.
+- Recorded Copilot review feedback for the `ai-review` wrapper contract in a bug note and tied it to the existing `bf47e67` fix.
+- Added a plan for opt-in CI failure-on-findings behavior in `ai-review` so pipelines can gate on review findings without changing the default local exit status.
+- Implemented the `ai-review` CI failure-on-findings mode with a result marker contract and BATS coverage.
+- Added a bug note for the missing `pyjenkinsapi-review` compatibility alias after the helper rename.
+- Restored `bin/pyjenkinsapi-review` as a thin compatibility alias to `bin/ai-review` and covered the legacy path in tests.
+- Updated repo guidance and CI review context handling to match the renamed `ai-*` helpers and avoid oversized AI review prompts.
 
 ### Why
 To provide persistent engineering context for future contributors/agents and reduce repeated repository discovery work.

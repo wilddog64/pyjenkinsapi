@@ -41,7 +41,7 @@ stages:
           - bash: |
               set -euo pipefail
               cd "$(Build.SourcesDirectory)"
-              bin/pyjenkinsapi-bootstrap --backend-cmd "$PYJENKINSAPI_LINT_BACKEND_CMD" --install
+              bin/ai-bootstrap --backend-cmd "$PYJENKINSAPI_LINT_BACKEND_CMD" --install
               user_bin_dir="$(python3 -m site --user-base)/bin"
               echo "##vso[task.prependpath]$user_bin_dir"
               command -v "$PYJENKINSAPI_LINT_BACKEND_CMD" >/dev/null 2>&1
@@ -50,13 +50,13 @@ stages:
           - bash: |
               set -euo pipefail
               cd "$(Build.SourcesDirectory)"
-              bin/pyjenkinsapi-lint
+              bin/ai-lint
             displayName: Lint
 
           - bash: |
               set -euo pipefail
               cd "$(Build.SourcesDirectory)"
-              bin/pyjenkinsapi-review
+              bin/ai-review
             displayName: Review
             env:
               GH_TOKEN: $(COPILOT_GITHUB_TOKEN)

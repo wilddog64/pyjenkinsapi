@@ -7,7 +7,7 @@ _repo_root() {
 
 _usage() {
   cat <<'EOF'
-Usage: pyjenkinsapi-lint [rigor lint args...]
+Usage: ai-lint [rigor lint args...]
 
 Run rigor lint with the repo-local Python backend mapping.
 EOF

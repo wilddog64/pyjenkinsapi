@@ -1,4 +1,4 @@
-# Plan: Redact forbidden fragments from `pyjenkinsapi-review` prompt-file input
+# Plan: Redact forbidden fragments from `ai-review` prompt-file input
 
 **Date:** 2026-05-03  
 **Branch:** `pyjenkinsapi-v0.1.0`  
@@ -9,7 +9,7 @@
 
 ## Goal
 
-Teach `bin/pyjenkinsapi-review` to sanitize prompt-file content before it reaches the vendored `rigor-cli` prompt guard.
+Teach `bin/ai-review` to sanitize prompt-file content before it reaches the vendored `rigor-cli` prompt guard.
 
 The wrapper should keep the current PR-style review UX, but ensure that review diffs containing blocked shell fragments are redacted before Copilot sees them.
 
@@ -62,7 +62,7 @@ The wrapper should keep the current PR-style review UX, but ensure that review d
 
 This plan does not modify them yet, but implementation will likely touch:
 
-- `bin/pyjenkinsapi-review`
+- `bin/ai-review`
 - `memory-bank/activeContext.md`
 - `memory-bank/progress.md`
 - `memory-bank/change-log.md`
@@ -72,7 +72,7 @@ This plan does not modify them yet, but implementation will likely touch:
 
 ## Definition of Done for the Future Implementation
 
-- `bin/pyjenkinsapi-review` redacts forbidden fragments from prompt text and prompt-file content before invoking `rigor review`.
+- `bin/ai-review` redacts forbidden fragments from prompt text and prompt-file content before invoking `rigor review`.
 - The wrapper passes a sanitized temporary file to `rigor review` when `--prompt-file` is used.
 - The original prompt-file remains unchanged.
 - A prompt-file containing blocked fragments no longer trips the vendored prompt guard.
