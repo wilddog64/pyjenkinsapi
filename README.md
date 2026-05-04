@@ -151,4 +151,5 @@ setup.py               # package metadata and console scripts
 - `tools/rigor-cli/` is vendored and should be treated as read-only unless a task explicitly refreshes the subtree.
 - `bin/ai-review` is intentionally PR-style and local-first; it does not mutate the review prompt file on disk.
 - `bin/ai-review` also accepts piped stdin as review context, so `git diff main...HEAD | bin/ai-review` works naturally.
+- `bin/ai-review --help` now mentions stdin usage directly.
 - If you change the CLI surface, update the memory bank and the relevant plan docs together.

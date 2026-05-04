@@ -10,6 +10,11 @@ _usage() {
 Usage: ai-review [--prompt TEXT] [--prompt-file FILE] [--model MODEL] [rigor review args...]
 
 Run rigor review with a repo-local default prompt, stdin support, and Copilot instructions.
+
+Piped stdin is accepted as review context. For example:
+  git diff main...HEAD | bin/ai-review
+
+Use --prompt for the review instruction and --prompt-file for file-based context.
 EOF
 }
 
