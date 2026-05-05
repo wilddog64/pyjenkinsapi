@@ -6,8 +6,10 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Click',
-        'pathlib2'
+        'click==6.7',
+        'pathlib2',
+        'xmltodict==0.11.0',
+        'jenkins-webapi==0.5.3'
     ],
     entry_points='''
         [console_scripts]

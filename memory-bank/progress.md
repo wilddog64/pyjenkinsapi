@@ -26,6 +26,7 @@
 - CI BATS failure on `ai-review` was traced to a stale `PYJENKINSAPI_RIGOR_BIN` test override; the harness now uses `AI_RIGOR_BIN` and the fix landed in `4d1c063`.
 - `pyjenkinsapi-v0.1.3` is the current release branch and is tracked by draft PR #3.
 - Apache 2.0 licensing has been added at the repo root and mirrored in `setup.py`.
+- The runtime dependency declaration now includes `jenkins-webapi==0.5.3` so `python setup.py install` can pull the package that provides `import jenkins`.
 
 ## Next Steps
 - Pick up the next scoped task on `pyjenkinsapi-v0.1.3`.
