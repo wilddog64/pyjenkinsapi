@@ -8,6 +8,7 @@
 - Azure helper scripts, plans, and review/docs work remain available for future follow-up.
 - A fresh draft PR now exists for `pyjenkinsapi-v0.1.3` at `https://github.com/wilddog64/pyjenkinsapi/pull/3`.
 - The `ai-review` CI failure from the stale `PYJENKINSAPI_RIGOR_BIN` override was fixed in commit `4d1c063` and the BATS harness now uses `AI_RIGOR_BIN`.
+- Apache 2.0 licensing has now been added at the repo root and surfaced in `setup.py`.
 
 ## Current Focus
 - Keep the next branch lean and focused on the next queued task.

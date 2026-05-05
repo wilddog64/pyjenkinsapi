@@ -25,6 +25,7 @@
 - CI review-context generation now avoids `--binary` and trims oversized diff payloads before invoking Copilot review.
 - CI BATS failure on `ai-review` was traced to a stale `PYJENKINSAPI_RIGOR_BIN` test override; the harness now uses `AI_RIGOR_BIN` and the fix landed in `4d1c063`.
 - `pyjenkinsapi-v0.1.3` is the current release branch and is tracked by draft PR #3.
+- Apache 2.0 licensing has been added at the repo root and mirrored in `setup.py`.
 
 ## Next Steps
 - Pick up the next scoped task on `pyjenkinsapi-v0.1.3`.
