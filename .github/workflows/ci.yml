@@ -51,15 +51,17 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t files < <(
-            find bin -maxdepth 1 -type f \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) | sort
+            find bin -maxdepth 1 -type f ! -type l \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) | sort
           )
-          shellcheck -S error "${files[@]}"
+          if [[ ${#files[@]} -gt 0 ]]; then
+            shellcheck -S error "${files[@]}"
+          fi
 
       - name: Run bash syntax checks
         shell: bash
         run: |
           set -euo pipefail
-          find bin -maxdepth 1 -type f \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) -print0 |
+          find bin -maxdepth 1 -type f ! -type l \( -name 'ai-*' -o -name 'pyjenkinsapi-review' \) -print0 |
           while IFS= read -r -d '' file; do
             bash -n "$file"
           done
