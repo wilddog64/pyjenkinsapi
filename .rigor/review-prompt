@@ -1,0 +1,1 @@
+Review this pyjenkinsapi change for correctness, backward compatibility, config-driven credential handling, secret handling, and missing tests or docs. Prioritize behavior regressions and compatibility risks over style-only comments.
