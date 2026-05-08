@@ -1,139 +1,25 @@
----
 name: CI
-
-"on":
+on:
+  push:
+    branches: [main, "feat/**"]
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-env:
-  COPILOT_CLI_VERSION: v1.0.32
-
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [main]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Install system dependencies
-        shell: bash
+      - uses: actions/checkout@v4
+      - name: Install bats
         run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y bats shellcheck
-
-      - name: Install Python dependencies
-        shell: bash
+          BATS_VERSION="v1.11.0"
+          git clone --branch "${BATS_VERSION}" --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+          sudo /tmp/bats-core/install.sh /usr/local
+      - name: shellcheck
+        run: shellcheck bin/rigor
+      - name: BATS
         run: |
-          set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install -e .
-
-      - name: Run shellcheck
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t files < <(
-            find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' | sort
-          )
-          shellcheck -S error "${files[@]}"
-
-      - name: Run bash syntax checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          find bin -maxdepth 1 -type f -name 'pyjenkinsapi-*' -print0 |
-          while IFS= read -r -d '' file; do
-            bash -n "$file"
-          done
-
-      - name: Run Python compile checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m compileall jenkinsapi
-
-      - name: Run BATS
-        shell: bash
-        run: |
-          set -euo pipefail
-          bats scripts/tests/pyjenkinsapi-review.bats
-
-  review:
-    needs: lint
-    if: >-
-      ${{ github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-latest
-    env:
-      COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Install Python dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install -e .
-
-      - name: Install Copilot CLI
-        if: env.COPILOT_GITHUB_TOKEN != ''
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_TOKEN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          tmp_dir="$(mktemp -d)"
-          curl -fsSL --retry 3 --retry-delay 5 \
-            https://gh.io/copilot-install \
-            -o "${tmp_dir}/copilot-install.sh"
-          chmod +x "${tmp_dir}/copilot-install.sh"
-          env VERSION="$COPILOT_CLI_VERSION" bash "${tmp_dir}/copilot-install.sh"
-          rm -rf "$tmp_dir"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Generate review context
-        if: env.COPILOT_GITHUB_TOKEN != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          review_file="$RUNNER_TEMP/pyjenkinsapi-review.diff"
-          git diff --binary origin/main...HEAD >"$review_file"
-          printf 'PYJENKINSAPI_REVIEW_DIFF=%s\n' "$review_file" >> "$GITHUB_ENV"
-
-      - name: Run review wrapper
-        if: env.COPILOT_GITHUB_TOKEN != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          bin/pyjenkinsapi-review \
-            --prompt "Review this pull request diff for correctness, compatibility, and risky changes." \
-            --prompt-file "$PYJENKINSAPI_REVIEW_DIFF"
+          env -i PATH="/usr/local/bin:/usr/bin:/bin" HOME="$HOME" TMPDIR="${TMPDIR:-/tmp}" \
+            bash --norc --noprofile -c 'bats scripts/tests/rigor.bats'

@@ -1,50 +1,34 @@
-# Cline Rules for `pyjenkinsapi`
+# .clinerules — rigor-cli
 
-## Project Context
-- Language: Python (legacy-compatible style present in codebase)
-- Domain: Jenkins API wrapper + CLI tooling for views/jobs and config-driven auth
-- Entry points:
-  - `jenkins-cmd=jenkinsapi.scripts.jenkins_cli:jenkins`
-  - `serverlist=jenkinsapi.scripts.serverlist:main`
+Standalone CLI dispatcher over lib-foundation's agent rigor framework. Exposes `checkpoint | audit | lint` subcommands. No Kubernetes dependency — works with any Bash project.
 
-## Primary Objectives for Changes
-1. Preserve existing CLI behavior and command names unless explicitly asked to change them.
-2. Keep backward compatibility with current module paths and public class names (especially `jenkinsapi.core.Jenkins`).
-3. Prefer minimal, surgical edits over broad rewrites.
+## Layout
 
-## Coding Standards
-- Follow existing project conventions first, then modernize only when requested.
-- Use clear, explicit names for Jenkins concepts (`view`, `job`, `config_section`, etc.).
-- Avoid introducing new runtime dependencies unless necessary.
-- Keep side effects in CLI functions; keep reusable logic in non-CLI modules.
+```
+bin/rigor                  — dispatcher (checkpoint | audit | lint)
+scripts/lib/foundation/    — lib-foundation git subtree (DO NOT EDIT)
+scripts/tests/rigor.bats   — BATS test suite
+.github/workflows/ci.yml   — shellcheck + BATS CI
+```
 
-## Configuration & Secrets
-- Never hardcode real credentials, tokens, or Jenkins URLs.
-- Preserve config-driven behavior via `jenkins.ini` and `config_section_map(...)`.
-- Treat password fields as sensitive; do not log plaintext secrets.
+## Before Any Task
 
-## Testing / Validation Expectations
-When making changes, prefer the smallest validation that proves correctness:
-1. Static sanity check: `python -m py_compile` for touched modules when practical.
-2. CLI smoke check: `python -m jenkinsapi.scripts.jenkins_cli --help` when entrypoints are edited.
-3. If behavior changes, document old vs new behavior in PR notes or commit message.
+1. Read `memory-bank/activeContext.md` — branch, focus, open tasks
+2. Read `memory-bank/progress.md` — what is done, what is pending
+3. `git pull origin <current-branch>` — another agent may have pushed
 
-## Editing Boundaries
-- Do not rename package/module structure without explicit request.
-- Do not remove legacy-compatible imports (`from __future__ import print_function`) unless requested.
-- Keep existing public interfaces stable:
-  - `jenkinsapi.core.Jenkins`
-  - CLI command group `jenkins`
-- Treat `tools/rigor-cli/` as a vendored subtree; do not edit it directly unless the task is to refresh that subtree.
+## Critical Rules
 
-## Preferred Refactor Pattern
-1. Confirm existing behavior from source.
-2. Isolate bug / improvement.
-3. Patch only necessary lines.
-4. Re-scan related call sites (`search_files`) for consistency.
-5. Run lightweight validation commands.
+- **`scripts/lib/foundation/` is read-only** — it is a git subtree from lib-foundation; all changes go upstream first, then `git subtree pull`
+- **No bare `sudo`** — always `_run_command --prefer-sudo` or `_run_command --require-sudo`
+- **Double-quote all variable expansions** — `"$var"`, never bare `$var` in command args
+- **`set -euo pipefail`** on all new scripts
+- **No eval with external input**
+- **Pin all versions** — no unpinned `git clone` in CI workflows; use `--branch vX.Y.Z`
+- **NEVER run `git rebase -i`, `git reset --hard`, or `git push --force`**
 
-## Documentation Expectations
-- Update `memory-bank/` notes when architectural assumptions change.
-- Keep `memory-bank/activeContext.md` current during work and `memory-bank/progress.md` current at milestones.
-- For non-trivial changes, add a short “why” explanation near complex logic.
+## Key Contracts — Do Not Break
+
+`bin/rigor` subcommands: `checkpoint | audit | lint`
+`_detect_platform` returns: `mac | wsl | debian | redhat | linux`
+`_run_command` mode flags: `--prefer-sudo`, `--require-sudo`, `--probe '<subcmd>'`, `--quiet`
