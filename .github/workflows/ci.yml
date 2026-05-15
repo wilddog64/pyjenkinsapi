@@ -76,9 +76,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Skip BATS tests for ai-review until rigor-cli subtree is pulled
-          # (symlinks in bin/ will be active after merge and subtree integration)
-          echo "Skipping BATS tests — symlinks are pending rigor-cli v0.1.5 subtree pull"
+          bats scripts/tests/ai-review.bats
 
   review:
     needs: lint

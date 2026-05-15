@@ -1,5 +1,31 @@
 # Changes — rigor-cli
 
+## [Unreleased]
+
+### Added
+- `bin/ai-triage-pod`: collects `kubectl describe pod` + recent logs, appends optional stdin and `--context-file` content, then sends the bundle to `ai-review`
+- `docs/howto/ai-triage-pod.md`: usage guide for pod triage and optional context inputs
+- `docs/howto/use-ai-helpers.md`: helper index updated to include `ai-triage-pod`
+
+## [v0.1.6] — 2026-05-08
+
+### Fixed
+- Resolve symlink in `${BASH_SOURCE[0]}` before locating `rigor` binary — `bin/ai-bootstrap`, `bin/ai-lint`, `bin/ai-review` now work correctly when invoked through a symlink
+
+### Changed
+- `bin/ai-review`: `RIGOR_REVIEW_MAX_LINES` default raised from 1000 to 5000
+
+---
+
+## [v0.1.5] — 2026-05-08
+
+### Added
+- `bin/ai-bootstrap`: checks/installs the lint backend (default: ruff); verifies rigor is present; `RIGOR_PYTHON_BIN` configures the Python interpreter
+- `bin/ai-lint`: wraps `rigor lint`; sets `RIGOR_LINT_BACKENDS` from `RIGOR_LINT_BACKEND_CMD` (default: `py:ruff`); verifies rigor is present before exec
+- `bin/ai-review`: wraps `rigor review`; configurable default prompt via `RIGOR_REVIEW_DEFAULT_PROMPT` env var, `.rigor/review-prompt` file, or built-in generic default; `--fail-on-findings` CI mode; stdin piping; prompt redaction; `RIGOR_REVIEW_MAX_LINES` diff cap (default: 1000) with truncation warning
+- `scripts/tests/rigor.bats`: 8 new tests covering all three helpers
+
+
 ## [v0.1.4] — 2026-05-03
 
 ### Added
